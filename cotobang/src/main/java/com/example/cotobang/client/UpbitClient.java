@@ -9,8 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -24,6 +23,21 @@ public class UpbitClient {
     private static final String UPBIT_URL = "https://api.upbit.com/v1/market/all";
 
     public List<CoinResponse> list() {
-        return null;
+        URI uri = UriComponentsBuilder.fromUriString(UPBIT_URL)
+                .queryParam("isDetails", "false")
+                .build()
+                .encode(StandardCharsets.UTF_8)
+                .toUri();
+
+        RequestEntity<Void> request = RequestEntity.get(uri)
+                .build();
+
+        ResponseEntity<List<CoinResponse>> responseEntity =
+                new RestTemplate().exchange(
+                        request,
+                        new ParameterizedTypeReference<>() {}
+                );
+
+        return responseEntity.getBody();
     }
 }
