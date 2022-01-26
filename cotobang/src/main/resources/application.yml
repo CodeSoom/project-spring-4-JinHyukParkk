@@ -1,0 +1,12 @@
+spring:
+ h2:
+  console:
+   enabled: true
+   path: /h2-console
+ jpa:
+  hibernate:
+   ddl-auto: update
+ datasource:
+  url: jdbc:mysql://192.168.0.27:3307
+  username: root
+  password: 1234
