@@ -1,6 +1,6 @@
 package com.example.cotobang.client;
 
-import com.example.cotobang.domain.CoinResponse;
+import com.example.cotobang.dto.CoinResponse;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,6 @@
 package com.example.cotobang.client;
 
-import com.example.cotobang.domain.CoinResponse;
+import com.example.cotobang.dto.CoinResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
