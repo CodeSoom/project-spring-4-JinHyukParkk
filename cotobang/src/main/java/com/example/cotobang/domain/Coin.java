@@ -1,7 +1,9 @@
 package com.example.cotobang.domain;
 
 
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +13,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Coin {
 
     @Id
@@ -28,4 +31,19 @@ public class Coin {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    @Builder
+    public Coin(String market,
+                String koreanName,
+                String englishName,
+                String description,
+                LocalDateTime createdAt,
+                LocalDateTime updatedAt) {
+        this.market = market;
+        this.koreanName = koreanName;
+        this.englishName = englishName;
+        this.description = description;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 }
