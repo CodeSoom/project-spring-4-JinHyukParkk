@@ -1,4 +1,4 @@
-package com.example.cotobang.dto;
+package com.example.cotobang.client.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class CoinResponse {
+public class UpbitCoinResponseDto {
 
     private String market;
 

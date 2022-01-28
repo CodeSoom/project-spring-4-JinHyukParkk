@@ -1,6 +1,6 @@
 package com.example.cotobang.client;
 
-import com.example.cotobang.dto.CoinResponse;
+import com.example.cotobang.client.dto.UpbitCoinResponseDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -25,10 +25,10 @@ class UpbitClientTest {
         @Test
         @DisplayName("코인 리스트를 가져옵니다.")
         void it_return_coin_list() {
-            List<CoinResponse> coinResponses = upbitClient.list();
+            List<UpbitCoinResponseDto> upbitCoinRespons = upbitClient.list();
 
-            assertThat(coinResponses).hasSizeGreaterThan(0);
-            assertThat(coinResponses.get(0)).isNotNull();
+            assertThat(upbitCoinRespons).hasSizeGreaterThan(0);
+            assertThat(upbitCoinRespons.get(0)).isNotNull();
         }
     }
 }

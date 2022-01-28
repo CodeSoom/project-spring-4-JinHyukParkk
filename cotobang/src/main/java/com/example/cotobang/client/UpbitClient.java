@@ -1,6 +1,6 @@
 package com.example.cotobang.client;
 
-import com.example.cotobang.dto.CoinResponse;
+import com.example.cotobang.client.dto.UpbitCoinResponseDto;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ public class UpbitClient {
 
     private static final String UPBIT_URL = "https://api.upbit.com/v1/market/all";
 
-    public List<CoinResponse> list() {
+    public List<UpbitCoinResponseDto> list() {
         URI uri = UriComponentsBuilder.fromUriString(UPBIT_URL)
                 .queryParam("isDetails", "false")
                 .build()
@@ -32,7 +32,7 @@ public class UpbitClient {
         RequestEntity<Void> request = RequestEntity.get(uri)
                 .build();
 
-        ResponseEntity<List<CoinResponse>> responseEntity =
+        ResponseEntity<List<UpbitCoinResponseDto>> responseEntity =
                 new RestTemplate().exchange(
                         request,
                         new ParameterizedTypeReference<>() {}
