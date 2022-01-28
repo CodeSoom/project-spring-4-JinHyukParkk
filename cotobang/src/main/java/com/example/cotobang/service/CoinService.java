@@ -26,6 +26,6 @@ public class CoinService {
      * @return 전체 코인 리스트
      */
     public List<Coin> getCoins() {
-        return null;
+        return coinRepository.findAll();
     }
 }

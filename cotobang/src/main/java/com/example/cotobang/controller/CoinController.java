@@ -1,6 +1,7 @@
 package com.example.cotobang.controller;
 
 import com.example.cotobang.domain.Coin;
+import com.example.cotobang.service.CoinService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,12 @@ import java.util.List;
 @RequestMapping("/coins")
 public class CoinController {
 
+    private final CoinService coinService;
+
+    public CoinController(CoinService coinService) {
+        this.coinService = coinService;
+    }
+
     /**
      * 등록된 전체 코인 리스트를 반환합니다.
      *
@@ -26,6 +33,6 @@ public class CoinController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Coin> list() {
-        return null;
+        return coinService.getCoins();
     }
 }
