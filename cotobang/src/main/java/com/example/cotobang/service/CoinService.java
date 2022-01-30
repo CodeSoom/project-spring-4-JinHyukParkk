@@ -8,8 +8,6 @@ import java.util.List;
 
 /**
  * 코인에 대한 로직 처리
- *
- * @author Hyuk (pjh08190819@naver.com)
  */
 @Service
 public class CoinService {

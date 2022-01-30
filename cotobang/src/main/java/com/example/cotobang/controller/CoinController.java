@@ -12,8 +12,6 @@ import java.util.List;
 
 /**
  * 코인에 대한 요청 처리
- *
- * @author Hyuk (pjh08190819@naver.com)
  */
 @RestController
 @RequestMapping("/coins")

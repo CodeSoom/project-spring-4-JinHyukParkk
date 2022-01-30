@@ -14,8 +14,6 @@ import java.util.List;
 
 /**
  * 업비트 Open API 사용히는 Client
- *
- * @author Hyuk (pjh08190819@naver.com)
  */
 @Component
 public class UpbitClient {
