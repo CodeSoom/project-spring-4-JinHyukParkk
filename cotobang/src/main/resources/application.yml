@@ -10,3 +10,7 @@ spring:
 #  url: jdbc:mysql://192.168.0.27:3307
 #  username: root
 #  password: 1234
+
+
+upbit:
+ url: "https://api.upbit.com/v1/market/all"

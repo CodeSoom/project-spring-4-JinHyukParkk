@@ -1,6 +1,7 @@
 package com.example.cotobang.client;
 
 import com.example.cotobang.client.dto.UpbitCoinResponseDto;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +19,11 @@ import java.util.List;
 @Component
 public class UpbitClient {
 
-    private static final String UPBIT_URL = "https://api.upbit.com/v1/market/all";
+    @Value("${upbit.url}")
+    private String upbitUrl;
 
     public List<UpbitCoinResponseDto> list() {
-        URI uri = UriComponentsBuilder.fromUriString(UPBIT_URL)
+        URI uri = UriComponentsBuilder.fromUriString(upbitUrl)
                 .queryParam("isDetails", "false")
                 .build()
                 .encode(StandardCharsets.UTF_8)
