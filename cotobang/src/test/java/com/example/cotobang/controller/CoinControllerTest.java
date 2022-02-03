@@ -2,6 +2,8 @@ package com.example.cotobang.controller;
 
 import com.example.cotobang.domain.Coin;
 import com.example.cotobang.respository.CoinRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -9,10 +11,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,6 +32,11 @@ class CoinControllerTest {
     @Autowired
     CoinRepository coinRepository;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
+    Coin registedCoin;
+
     @BeforeEach
     void setUp() {
         Coin coin = Coin.builder()
@@ -35,6 +44,10 @@ class CoinControllerTest {
                 .build();
 
         coinRepository.save(coin);
+
+        registedCoin = Coin.builder()
+                .koreanName("솔라나")
+                .build();
     }
 
     @Nested
@@ -46,10 +59,38 @@ class CoinControllerTest {
         void it_return_coins() throws Exception {
             final int coinsSize = coinRepository.findAll().size();
 
-            mockMvc.perform(get("/coins"))
+            mockMvc.perform(
+                            get("/coins"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", hasSize(coinsSize)))
                     .andDo(print());
         }
+    }
+
+    @Nested
+    @DisplayName("POST /coin 요청은")
+    class Describe_post_coin {
+
+        @Nested
+        @DisplayName("등록된 coin이 주어진다면")
+        class Context_with_registered_coin {
+
+            @Test
+            @DisplayName("201(Created)와 등록된 Coin을 응답합니다.")
+            void it_return_registed_coin() throws Exception {
+                mockMvc.perform(
+                        post("/coin")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(coinToContent(registedCoin)))
+                        .andExpect(status().isCreated())
+                        .andExpect(jsonPath("$.korean_name").value(registedCoin.getKoreanName()))
+                        .andDo(print());
+            }
+        }
+    }
+
+    private String coinToContent(Coin coin) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(coin);
     }
 }
