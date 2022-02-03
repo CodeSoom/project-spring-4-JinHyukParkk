@@ -28,6 +28,6 @@ public class CoinService {
     }
 
     public Coin createCoin(Coin coin) {
-        return null;
+        return coinRepository.save(coin);
     }
 }
