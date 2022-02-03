@@ -1,10 +1,12 @@
 package com.example.cotobang.controller;
 
 import com.example.cotobang.domain.Coin;
+import com.example.cotobang.dto.CoinRequestDto;
 import com.example.cotobang.service.CoinService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,7 +39,7 @@ public class CoinController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Coin create() {
-        return null;
+    public Coin create(@RequestBody Coin coin) {
+        return coinService.createCoin(coin);
     }
 }
