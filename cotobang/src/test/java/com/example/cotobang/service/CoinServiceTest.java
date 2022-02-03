@@ -1,6 +1,7 @@
 package com.example.cotobang.service;
 
 import com.example.cotobang.domain.Coin;
+import com.example.cotobang.dto.CoinRequestDto;
 import com.example.cotobang.respository.CoinRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +22,7 @@ class CoinServiceTest {
     @Autowired
     CoinRepository coinRepository;
 
-    Coin registedCoin;
+    CoinRequestDto registerdcoinRequestDto;
 
     @BeforeEach
     void setUp() {
@@ -31,7 +32,7 @@ class CoinServiceTest {
 
         coinRepository.save(coin);
 
-        registedCoin = Coin.builder()
+        registerdcoinRequestDto = CoinRequestDto.builder()
                 .koreanName("솔라나")
                 .build();
     }
@@ -60,9 +61,9 @@ class CoinServiceTest {
             @Test
             @DisplayName("coin을 생성하고 리턴합니다")
             void it_created_coin_return_coin() {
-                Coin coin = coinService.createCoin(registedCoin);
+                Coin coin = coinService.createCoin(registerdcoinRequestDto);
 
-                assertThat(coin.getKoreanName()).isEqualTo(registedCoin.getKoreanName());
+                assertThat(coin.getKoreanName()).isEqualTo(registerdcoinRequestDto.getKoreanName());
             }
         }
     }

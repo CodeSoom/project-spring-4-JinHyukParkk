@@ -1,6 +1,7 @@
 package com.example.cotobang.service;
 
 import com.example.cotobang.domain.Coin;
+import com.example.cotobang.dto.CoinRequestDto;
 import com.example.cotobang.respository.CoinRepository;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,14 @@ public class CoinService {
         return coinRepository.findAll();
     }
 
-    public Coin createCoin(Coin coin) {
+    public Coin createCoin(CoinRequestDto coinRequestDto) {
+        final Coin coin = Coin.builder()
+                .market(coinRequestDto.getMarket())
+                .koreanName(coinRequestDto.getKoreanName())
+                .englishName(coinRequestDto.getDescription())
+                .description(coinRequestDto.getDescription())
+                .build();
+
         return coinRepository.save(coin);
     }
 }
