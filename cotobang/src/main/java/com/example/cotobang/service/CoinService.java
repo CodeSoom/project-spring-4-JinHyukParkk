@@ -26,4 +26,8 @@ public class CoinService {
     public List<Coin> getCoins() {
         return coinRepository.findAll();
     }
+
+    public Coin createCoin(Coin coin) {
+        return null;
+    }
 }
