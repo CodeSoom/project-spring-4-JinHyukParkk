@@ -32,7 +32,7 @@ public class CoinService {
         final Coin coin = Coin.builder()
                 .market(coinRequestDto.getMarket())
                 .koreanName(coinRequestDto.getKoreanName())
-                .englishName(coinRequestDto.getDescription())
+                .englishName(coinRequestDto.getEnglishName())
                 .description(coinRequestDto.getDescription())
                 .build();
 
