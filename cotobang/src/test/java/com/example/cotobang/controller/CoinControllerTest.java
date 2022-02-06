@@ -1,6 +1,8 @@
 package com.example.cotobang.controller;
 
 import com.example.cotobang.domain.Coin;
+import com.example.cotobang.dto.CoinRequestDto;
+import com.example.cotobang.fixture.CoinFixtureFactory;
 import com.example.cotobang.respository.CoinRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,19 +37,14 @@ class CoinControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    Coin registedCoin;
+    CoinFixtureFactory coinFactory;
 
     @BeforeEach
     void setUp() {
-        Coin coin = Coin.builder()
-                .koreanName("비트코인")
-                .build();
+        coinFactory = new CoinFixtureFactory();
 
+        Coin coin = coinFactory.createCoin();
         coinRepository.save(coin);
-
-        registedCoin = Coin.builder()
-                .koreanName("솔라나")
-                .build();
     }
 
     @Nested
@@ -75,6 +72,13 @@ class CoinControllerTest {
         @DisplayName("등록된 coin이 주어진다면")
         class Context_with_registered_coin {
 
+            CoinRequestDto givenCoinRequestDto;
+
+            @BeforeEach
+            void prepare() {
+                givenCoinRequestDto = coinFactory.createCoinRequestDto();
+            }
+
             @Test
             @DisplayName("201(Created)와 등록된 Coin을 응답합니다.")
             void it_return_registed_coin() throws Exception {
@@ -82,15 +86,18 @@ class CoinControllerTest {
                         post("/coin")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(coinToContent(registedCoin)))
+                                .content(coinRequestDtoToContent(givenCoinRequestDto)))
                         .andExpect(status().isCreated())
-                        .andExpect(jsonPath("$.korean_name").value(registedCoin.getKoreanName()))
+                        .andExpect(jsonPath("$.korean_name").value(givenCoinRequestDto.getKoreanName()))
                         .andDo(print());
             }
         }
     }
 
-    private String coinToContent(Coin coin) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(coin);
     }
+
+    private String coinRequestDtoToContent(CoinRequestDto coinRequestDto) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(coinRequestDto);
+    }
+
 }

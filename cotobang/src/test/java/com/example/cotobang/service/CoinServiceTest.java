@@ -2,6 +2,7 @@ package com.example.cotobang.service;
 
 import com.example.cotobang.domain.Coin;
 import com.example.cotobang.dto.CoinRequestDto;
+import com.example.cotobang.fixture.CoinFixtureFactory;
 import com.example.cotobang.respository.CoinRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,19 +23,14 @@ class CoinServiceTest {
     @Autowired
     CoinRepository coinRepository;
 
-    CoinRequestDto registerdcoinRequestDto;
+    CoinFixtureFactory coinFactory;
 
     @BeforeEach
     void setUp() {
-        Coin coin = Coin.builder()
-                .koreanName("비트코인")
-                .build();
+        coinFactory = new CoinFixtureFactory();
 
+        Coin coin = coinFactory.createCoin();
         coinRepository.save(coin);
-
-        registerdcoinRequestDto = CoinRequestDto.builder()
-                .koreanName("솔라나")
-                .build();
     }
 
     @Nested
@@ -58,12 +54,19 @@ class CoinServiceTest {
         @DisplayName("등록할 coin이 주어진다면")
         class Context_with_coin {
 
+            CoinRequestDto givenCoinRequestDto;
+
+            @BeforeEach
+            void prepare() {
+                givenCoinRequestDto = coinFactory.createCoinRequestDto();
+            }
+
             @Test
             @DisplayName("coin을 생성하고 리턴합니다")
             void it_created_coin_return_coin() {
-                Coin coin = coinService.createCoin(registerdcoinRequestDto);
+                Coin coin = coinService.createCoin(givenCoinRequestDto);
 
-                assertThat(coin.getKoreanName()).isEqualTo(registerdcoinRequestDto.getKoreanName());
+                assertThat(coin.getKoreanName()).isEqualTo(givenCoinRequestDto.getKoreanName());
             }
         }
     }
