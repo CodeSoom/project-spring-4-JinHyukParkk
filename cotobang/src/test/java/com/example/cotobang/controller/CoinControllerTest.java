@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -83,10 +84,10 @@ class CoinControllerTest {
             @DisplayName("201(Created)와 등록된 Coin을 응답합니다.")
             void it_return_ok_and_registed_coin() throws Exception {
                 mockMvc.perform(
-                        post("/coins")
-                                .accept(MediaType.APPLICATION_JSON)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(coinRequestDtoToContent(givenCoinRequestDto)))
+                                post("/coins")
+                                        .accept(MediaType.APPLICATION_JSON)
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(coinRequestDtoToContent(givenCoinRequestDto)))
                         .andExpect(status().isCreated())
                         .andExpect(jsonPath("$.koreanName").value(givenCoinRequestDto.getKoreanName()))
                         .andDo(print());
@@ -121,6 +122,34 @@ class CoinControllerTest {
     @Nested
     @DisplayName("PUT/PATCH 요청은")
     class Describe_put_patch_coin {
+
+        @Nested
+        @DisplayName("id와 coin이 주어진다면")
+        class Context_with_id_and_coin {
+
+            Long givenId;
+            CoinRequestDto coinRequestDto;
+
+            @BeforeEach
+            void prepare() {
+                Coin coin = coinFactory.createCoin();
+                givenId = coinRepository.save(coin).getId();
+
+                coinRequestDto = coinFactory.createCoinRequestDto();
+            }
+
+            @Test
+            @DisplayName("200(Ok)와 수정된 coin을 응답합니다.")
+            void it_update_coin_return_ok_and_coin() throws Exception {
+                mockMvc.perform(put("/coins/" + givenId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(coinRequestDtoToContent(coinRequestDto)))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.id").value(givenId))
+                        .andExpect(jsonPath("$.koreanName").value(coinRequestDto.getKoreanName()))
+                        .andDo(print());
+            }
+        }
 
     }
 
