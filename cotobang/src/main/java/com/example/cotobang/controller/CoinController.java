@@ -48,6 +48,6 @@ public class CoinController {
 
     @RequestMapping(path = "/{id}", method = {RequestMethod.PUT, RequestMethod.PATCH})
     public Coin update(@PathVariable Long id, @RequestBody CoinRequestDto coinRequestDto) {
-        return null;
+        return coinService.updateCoin(id, coinRequestDto);
     }
 }

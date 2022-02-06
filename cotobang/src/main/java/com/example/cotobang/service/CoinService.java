@@ -40,6 +40,15 @@ public class CoinService {
     }
 
     public Coin updateCoin(Long targetId, CoinRequestDto source) {
-        return null;
+        Coin coin = coinRepository.findById(targetId).get();
+
+        coin.change(
+                source.getMarket(),
+                source.getKoreanName(),
+                source.getEnglishName(),
+                source.getDescription()
+        );
+
+        return coin;
     }
 }
