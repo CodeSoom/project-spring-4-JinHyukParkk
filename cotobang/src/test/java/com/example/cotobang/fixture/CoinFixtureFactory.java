@@ -21,4 +21,10 @@ public class CoinFixtureFactory {
                 .englishName("Solana")
                 .build();
     }
+
+    public CoinRequestDto createBlankCoinRequestDto() {
+        return CoinRequestDto.builder()
+                .koreanName("솔라나")
+                .build();
+    }
 }

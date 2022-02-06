@@ -65,12 +65,12 @@ class CoinControllerTest {
     }
 
     @Nested
-    @DisplayName("POST /coin 요청은")
+    @DisplayName("POST /coins 요청은")
     class Describe_post_coin {
 
         @Nested
-        @DisplayName("등록된 coin이 주어진다면")
-        class Context_with_registered_coin {
+        @DisplayName("coin이 주어진다면")
+        class Context_with_coin {
 
             CoinRequestDto givenCoinRequestDto;
 
@@ -81,9 +81,9 @@ class CoinControllerTest {
 
             @Test
             @DisplayName("201(Created)와 등록된 Coin을 응답합니다.")
-            void it_return_registed_coin() throws Exception {
+            void it_return_ok_and_registed_coin() throws Exception {
                 mockMvc.perform(
-                        post("/coin")
+                        post("/coins")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(coinRequestDtoToContent(givenCoinRequestDto)))
@@ -92,7 +92,35 @@ class CoinControllerTest {
                         .andDo(print());
             }
         }
+
+        @Nested
+        @DisplayName("빈값이 포함된 coin 주어진다면")
+        class Context_with_blank_coin {
+
+            CoinRequestDto givenBlankCoinRequestDto;
+
+            @BeforeEach
+            void prepare() {
+                givenBlankCoinRequestDto = coinFactory.createBlankCoinRequestDto();
+            }
+
+            @Test
+            @DisplayName("400(Bad Request)를 응답합니다.")
+            void it_return_bad_request() throws Exception {
+                mockMvc.perform(
+                                post("/coins")
+                                        .accept(MediaType.APPLICATION_JSON)
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(coinRequestDtoToContent(givenBlankCoinRequestDto)))
+                        .andExpect(status().isBadRequest())
+                        .andDo(print());
+            }
+        }
     }
+
+    @Nested
+    @DisplayName("PUT/PATCH 요청은")
+    class Describe_put_patch_coin {
 
     }
 
