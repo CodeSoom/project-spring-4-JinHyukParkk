@@ -19,12 +19,13 @@ public class CoinFixtureFactory {
                 .market("KRW-SOL")
                 .koreanName("솔라나")
                 .englishName("Solana")
+                .description("퍼블릭 블록체인 플랫폼입니다.")
                 .build();
     }
 
     public CoinRequestDto createBlankCoinRequestDto() {
         return CoinRequestDto.builder()
-                .koreanName("솔라나")
+                .koreanName("위믹스")
                 .build();
     }
 }

@@ -88,7 +88,7 @@ class CoinControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(coinRequestDtoToContent(givenCoinRequestDto)))
                         .andExpect(status().isCreated())
-                        .andExpect(jsonPath("$.korean_name").value(givenCoinRequestDto.getKoreanName()))
+                        .andExpect(jsonPath("$.koreanName").value(givenCoinRequestDto.getKoreanName()))
                         .andDo(print());
             }
         }
@@ -127,5 +127,4 @@ class CoinControllerTest {
     private String coinRequestDtoToContent(CoinRequestDto coinRequestDto) throws JsonProcessingException {
         return objectMapper.writeValueAsString(coinRequestDto);
     }
-
 }
