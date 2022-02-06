@@ -70,4 +70,33 @@ class CoinServiceTest {
             }
         }
     }
+
+    @Nested
+    @DisplayName("updateCoin 메소드는")
+    class Describe_updateCoin {
+
+        @Nested
+        @DisplayName("id와 coin이 주어진다면")
+        class Context_with_id_and_coin {
+
+            Long givenId;
+            CoinRequestDto givenCoinRequestDto;
+
+            @BeforeEach
+            void prepare() {
+                Coin coin = coinFactory.createCoin();
+                givenId = coinRepository.save(coin).getId();
+
+                givenCoinRequestDto = coinFactory.createCoinRequestDto();
+            }
+
+            @Test
+            @DisplayName("주어진 id의 coin을 수정하고 리턴합니다.")
+            void it_update_coin_return_coin() {
+                Coin coin = coinService.updateCoin(givenId, givenCoinRequestDto);
+
+                assertThat(coin.getKoreanName()).isEqualTo(givenCoinRequestDto.getKoreanName());
+            }
+        }
+    }
 }

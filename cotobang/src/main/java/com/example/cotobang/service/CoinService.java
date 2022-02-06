@@ -38,4 +38,8 @@ public class CoinService {
 
         return coinRepository.save(coin);
     }
+
+    public Coin updateCoin(Long targetId, CoinRequestDto source) {
+        return null;
+    }
 }

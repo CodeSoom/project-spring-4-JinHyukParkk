@@ -150,7 +150,6 @@ class CoinControllerTest {
                         .andDo(print());
             }
         }
-
     }
 
     private String coinRequestDtoToContent(CoinRequestDto coinRequestDto) throws JsonProcessingException {
