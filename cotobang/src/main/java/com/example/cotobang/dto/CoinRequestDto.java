@@ -4,14 +4,19 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+
 @Getter
 @NoArgsConstructor
 public class CoinRequestDto {
 
+    @NotBlank
     private String market;
 
+    @NotBlank
     private String koreanName;
 
+    @NotBlank
     private String englishName;
 
     private String description;
