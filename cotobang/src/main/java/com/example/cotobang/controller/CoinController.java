@@ -55,6 +55,6 @@ public class CoinController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Coin delete(@PathVariable Long id) {
-        return null;
+        return coinService.deleteCoin(id);
     }
 }
