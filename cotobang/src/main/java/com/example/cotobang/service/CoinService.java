@@ -53,6 +53,10 @@ public class CoinService {
     }
 
     public Coin deleteCoin(Long id) {
-        return null;
+        Coin coin = coinRepository.findById(id).get();
+
+        coinRepository.delete(coin);
+
+        return coin;
     }
 }

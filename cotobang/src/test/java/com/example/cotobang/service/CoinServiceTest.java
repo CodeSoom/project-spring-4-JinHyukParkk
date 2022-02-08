@@ -121,10 +121,9 @@ class CoinServiceTest {
             void it_update_coin_return_coin() {
                 coinService.deleteCoin(givenId);
 
-                Coin foundCoin = coinRepository.findById(givenId).get();
+                Coin foundCoin = coinRepository.findById(givenId).orElse(null);
                 assertThat(foundCoin).isNull();
             }
         }
     }
-
 }
