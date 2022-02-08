@@ -1,7 +1,7 @@
 package com.example.cotobang.service;
 
 import com.example.cotobang.domain.Coin;
-import com.example.cotobang.dto.CoinRequestDto;
+import com.example.cotobang.dto.CoinDto;
 import com.example.cotobang.fixture.CoinFixtureFactory;
 import com.example.cotobang.respository.CoinRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,19 +54,19 @@ class CoinServiceTest {
         @DisplayName("등록할 coin이 주어진다면")
         class Context_with_coin {
 
-            CoinRequestDto givenCoinRequestDto;
+            CoinDto givenCoinDto;
 
             @BeforeEach
             void prepare() {
-                givenCoinRequestDto = coinFactory.createCoinRequestDto();
+                givenCoinDto = coinFactory.createCoinRequestDto();
             }
 
             @Test
             @DisplayName("coin을 생성하고 리턴합니다")
             void it_created_coin_return_coin() {
-                Coin coin = coinService.createCoin(givenCoinRequestDto);
+                Coin coin = coinService.createCoin(givenCoinDto);
 
-                assertThat(coin.getKoreanName()).isEqualTo(givenCoinRequestDto.getKoreanName());
+                assertThat(coin.getKoreanName()).isEqualTo(givenCoinDto.getKoreanName());
             }
         }
     }
@@ -80,22 +80,22 @@ class CoinServiceTest {
         class Context_with_id_and_coin {
 
             Long givenId;
-            CoinRequestDto givenCoinRequestDto;
+            CoinDto givenCoinDto;
 
             @BeforeEach
             void prepare() {
                 Coin coin = coinFactory.createCoin();
                 givenId = coinRepository.save(coin).getId();
 
-                givenCoinRequestDto = coinFactory.createCoinRequestDto();
+                givenCoinDto = coinFactory.createCoinRequestDto();
             }
 
             @Test
             @DisplayName("주어진 id의 coin을 수정하고 리턴합니다.")
             void it_update_coin_return_coin() {
-                Coin coin = coinService.updateCoin(givenId, givenCoinRequestDto);
+                Coin coin = coinService.updateCoin(givenId, givenCoinDto);
 
-                assertThat(coin.getKoreanName()).isEqualTo(givenCoinRequestDto.getKoreanName());
+                assertThat(coin.getKoreanName()).isEqualTo(givenCoinDto.getKoreanName());
             }
         }
     }

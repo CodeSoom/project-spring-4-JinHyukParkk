@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @NoArgsConstructor
-public class CoinRequestDto {
+public class CoinDto {
 
     @NotBlank
     private String market;
@@ -22,10 +22,10 @@ public class CoinRequestDto {
     private String description;
 
     @Builder
-    public CoinRequestDto(String market,
-                          String koreanName,
-                          String englishName,
-                          String description) {
+    public CoinDto(String market,
+                   String koreanName,
+                   String englishName,
+                   String description) {
         this.market = market;
         this.koreanName = koreanName;
         this.englishName = englishName;

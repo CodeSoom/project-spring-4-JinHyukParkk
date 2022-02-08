@@ -1,7 +1,7 @@
 package com.example.cotobang.controller;
 
 import com.example.cotobang.domain.Coin;
-import com.example.cotobang.dto.CoinRequestDto;
+import com.example.cotobang.dto.CoinDto;
 import com.example.cotobang.service.CoinService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,13 +43,13 @@ public class CoinController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Coin create(@RequestBody @Valid CoinRequestDto coinRequestDto) {
-        return coinService.createCoin(coinRequestDto);
+    public Coin create(@RequestBody @Valid CoinDto coinDto) {
+        return coinService.createCoin(coinDto);
     }
 
     @RequestMapping(path = "/{id}", method = {RequestMethod.PUT, RequestMethod.PATCH})
-    public Coin update(@PathVariable Long id, @RequestBody CoinRequestDto coinRequestDto) {
-        return coinService.updateCoin(id, coinRequestDto);
+    public Coin update(@PathVariable Long id, @RequestBody CoinDto coinDto) {
+        return coinService.updateCoin(id, coinDto);
     }
 
     @DeleteMapping("/{id}")

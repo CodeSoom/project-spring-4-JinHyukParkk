@@ -1,7 +1,7 @@
 package com.example.cotobang.controller;
 
 import com.example.cotobang.domain.Coin;
-import com.example.cotobang.dto.CoinRequestDto;
+import com.example.cotobang.dto.CoinDto;
 import com.example.cotobang.fixture.CoinFixtureFactory;
 import com.example.cotobang.respository.CoinRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -75,11 +75,11 @@ class CoinControllerTest {
         @DisplayName("coin이 주어진다면")
         class Context_with_coin {
 
-            CoinRequestDto givenCoinRequestDto;
+            CoinDto givenCoinDto;
 
             @BeforeEach
             void prepare() {
-                givenCoinRequestDto = coinFactory.createCoinRequestDto();
+                givenCoinDto = coinFactory.createCoinRequestDto();
             }
 
             @Test
@@ -89,9 +89,9 @@ class CoinControllerTest {
                                 post("/coins")
                                         .accept(MediaType.APPLICATION_JSON)
                                         .contentType(MediaType.APPLICATION_JSON)
-                                        .content(coinRequestDtoToContent(givenCoinRequestDto)))
+                                        .content(coinRequestDtoToContent(givenCoinDto)))
                         .andExpect(status().isCreated())
-                        .andExpect(jsonPath("$.koreanName").value(givenCoinRequestDto.getKoreanName()))
+                        .andExpect(jsonPath("$.koreanName").value(givenCoinDto.getKoreanName()))
                         .andDo(print());
             }
         }
@@ -100,11 +100,11 @@ class CoinControllerTest {
         @DisplayName("빈값이 포함된 coin 주어진다면")
         class Context_with_blank_coin {
 
-            CoinRequestDto givenBlankCoinRequestDto;
+            CoinDto givenBlankCoinDto;
 
             @BeforeEach
             void prepare() {
-                givenBlankCoinRequestDto = coinFactory.createBlankCoinRequestDto();
+                givenBlankCoinDto = coinFactory.createBlankCoinRequestDto();
             }
 
             @Test
@@ -114,7 +114,7 @@ class CoinControllerTest {
                                 post("/coins")
                                         .accept(MediaType.APPLICATION_JSON)
                                         .contentType(MediaType.APPLICATION_JSON)
-                                        .content(coinRequestDtoToContent(givenBlankCoinRequestDto)))
+                                        .content(coinRequestDtoToContent(givenBlankCoinDto)))
                         .andExpect(status().isBadRequest())
                         .andDo(print());
             }
@@ -130,14 +130,14 @@ class CoinControllerTest {
         class Context_with_id_and_coin {
 
             Long givenId;
-            CoinRequestDto coinRequestDto;
+            CoinDto coinDto;
 
             @BeforeEach
             void prepare() {
                 Coin coin = coinFactory.createCoin();
                 givenId = coinRepository.save(coin).getId();
 
-                coinRequestDto = coinFactory.createCoinRequestDto();
+                coinDto = coinFactory.createCoinRequestDto();
             }
 
             @Test
@@ -145,10 +145,10 @@ class CoinControllerTest {
             void it_update_coin_return_ok_and_coin() throws Exception {
                 mockMvc.perform(put("/coins/" + givenId)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(coinRequestDtoToContent(coinRequestDto)))
+                                .content(coinRequestDtoToContent(coinDto)))
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$.id").value(givenId))
-                        .andExpect(jsonPath("$.koreanName").value(coinRequestDto.getKoreanName()))
+                        .andExpect(jsonPath("$.koreanName").value(coinDto.getKoreanName()))
                         .andDo(print());
             }
         }
@@ -184,7 +184,7 @@ class CoinControllerTest {
         }
     }
 
-    private String coinRequestDtoToContent(CoinRequestDto coinRequestDto) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(coinRequestDto);
+    private String coinRequestDtoToContent(CoinDto coinDto) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(coinDto);
     }
 }

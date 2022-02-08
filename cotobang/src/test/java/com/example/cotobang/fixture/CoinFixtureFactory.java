@@ -1,7 +1,7 @@
 package com.example.cotobang.fixture;
 
 import com.example.cotobang.domain.Coin;
-import com.example.cotobang.dto.CoinRequestDto;
+import com.example.cotobang.dto.CoinDto;
 
 public class CoinFixtureFactory {
 
@@ -14,8 +14,8 @@ public class CoinFixtureFactory {
                 .build();
     }
 
-    public CoinRequestDto createCoinRequestDto() {
-        return CoinRequestDto.builder()
+    public CoinDto createCoinRequestDto() {
+        return CoinDto.builder()
                 .market("KRW-SOL")
                 .koreanName("솔라나")
                 .englishName("Solana")
@@ -23,8 +23,8 @@ public class CoinFixtureFactory {
                 .build();
     }
 
-    public CoinRequestDto createBlankCoinRequestDto() {
-        return CoinRequestDto.builder()
+    public CoinDto createBlankCoinRequestDto() {
+        return CoinDto.builder()
                 .koreanName("위믹스")
                 .build();
     }
