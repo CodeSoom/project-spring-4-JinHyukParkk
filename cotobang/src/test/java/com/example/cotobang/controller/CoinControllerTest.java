@@ -17,6 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.hasSize;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -120,7 +122,7 @@ class CoinControllerTest {
     }
 
     @Nested
-    @DisplayName("PUT/PATCH 요청은")
+    @DisplayName("PUT,PATCH /coins 요청은")
     class Describe_put_patch_coin {
 
         @Nested
@@ -142,6 +144,39 @@ class CoinControllerTest {
             @DisplayName("200(Ok)와 수정된 coin을 응답합니다.")
             void it_update_coin_return_ok_and_coin() throws Exception {
                 mockMvc.perform(put("/coins/" + givenId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(coinRequestDtoToContent(coinRequestDto)))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.id").value(givenId))
+                        .andExpect(jsonPath("$.koreanName").value(coinRequestDto.getKoreanName()))
+                        .andDo(print());
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("DELETE /coins 요청은")
+    class Describe_delete_coin {
+
+        @Nested
+        @DisplayName("id가 주어진다면")
+        class Context_with_id {
+
+            Long givenId;
+            CoinRequestDto coinRequestDto;
+
+            @BeforeEach
+            void prepare() {
+                Coin coin = coinFactory.createCoin();
+                givenId = coinRepository.save(coin).getId();
+
+                coinRequestDto = coinFactory.createCoinRequestDto();
+            }
+
+            @Test
+            @DisplayName("201(No Content)와 삭제된 coin을 응답합니다.")
+            void it_update_coin_return_ok_and_coin() throws Exception {
+                mockMvc.perform(delete("/coins/" + givenId)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(coinRequestDtoToContent(coinRequestDto)))
                         .andExpect(status().isOk())
