@@ -36,14 +36,20 @@ public class Coin {
     public Coin(String market,
                 String koreanName,
                 String englishName,
-                String description,
-                LocalDateTime createdAt,
-                LocalDateTime updatedAt) {
+                String description) {
         this.market = market;
         this.koreanName = koreanName;
         this.englishName = englishName;
         this.description = description;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+    }
+
+    public void change(String market,
+                String koreanName,
+                String englishName,
+                String description) {
+        this.market = market;
+        this.koreanName = koreanName;
+        this.englishName = englishName;
+        this.description = description;
     }
 }

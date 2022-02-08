@@ -1,13 +1,20 @@
 package com.example.cotobang.controller;
 
 import com.example.cotobang.domain.Coin;
+import com.example.cotobang.dto.CoinDto;
 import com.example.cotobang.service.CoinService;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -32,5 +39,22 @@ public class CoinController {
     @ResponseStatus(HttpStatus.OK)
     public List<Coin> list() {
         return coinService.getCoins();
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Coin create(@RequestBody @Valid CoinDto coinDto) {
+        return coinService.createCoin(coinDto);
+    }
+
+    @RequestMapping(path = "/{id}", method = {RequestMethod.PUT, RequestMethod.PATCH})
+    public Coin update(@PathVariable Long id, @RequestBody CoinDto coinDto) {
+        return coinService.updateCoin(id, coinDto);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Coin delete(@PathVariable Long id) {
+        return coinService.deleteCoin(id);
     }
 }
