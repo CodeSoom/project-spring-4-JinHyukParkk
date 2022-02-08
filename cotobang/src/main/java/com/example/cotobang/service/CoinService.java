@@ -51,4 +51,8 @@ public class CoinService {
 
         return coin;
     }
+
+    public Coin deleteCoin(Long id) {
+        return null;
+    }
 }

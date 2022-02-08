@@ -99,4 +99,32 @@ class CoinServiceTest {
             }
         }
     }
+
+    @Nested
+    @DisplayName("deleteCoin 메소드는")
+    class Describe_deleteCoin {
+
+        @Nested
+        @DisplayName("id가 주어진다면")
+        class Context_with_id {
+
+            Long givenId;
+
+            @BeforeEach
+            void prepare() {
+                Coin coin = coinFactory.createCoin();
+                givenId = coinRepository.save(coin).getId();
+            }
+
+            @Test
+            @DisplayName("주어진 id의 coin을 삭제하고 리턴합니다.")
+            void it_update_coin_return_coin() {
+                coinService.deleteCoin(givenId);
+
+                Coin foundCoin = coinRepository.findById(givenId).get();
+                assertThat(foundCoin).isNull();
+            }
+        }
+    }
+
 }
