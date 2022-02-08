@@ -163,25 +163,22 @@ class CoinControllerTest {
         class Context_with_id {
 
             Long givenId;
-            CoinRequestDto coinRequestDto;
+            Coin coin;
 
             @BeforeEach
             void prepare() {
-                Coin coin = coinFactory.createCoin();
+                coin = coinFactory.createCoin();
                 givenId = coinRepository.save(coin).getId();
-
-                coinRequestDto = coinFactory.createCoinRequestDto();
             }
 
             @Test
             @DisplayName("201(No Content)와 삭제된 coin을 응답합니다.")
             void it_update_coin_return_ok_and_coin() throws Exception {
                 mockMvc.perform(delete("/coins/" + givenId)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(coinRequestDtoToContent(coinRequestDto)))
-                        .andExpect(status().isOk())
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isNoContent())
                         .andExpect(jsonPath("$.id").value(givenId))
-                        .andExpect(jsonPath("$.koreanName").value(coinRequestDto.getKoreanName()))
+                        .andExpect(jsonPath("$.koreanName").value(coin.getKoreanName()))
                         .andDo(print());
             }
         }
