@@ -2,6 +2,7 @@ package com.example.cotobang.service;
 
 import com.example.cotobang.domain.Coin;
 import com.example.cotobang.dto.CoinDto;
+import com.example.cotobang.errors.CoinNotFoundException;
 import com.example.cotobang.respository.CoinRepository;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +41,7 @@ public class CoinService {
     }
 
     public Coin updateCoin(Long targetId, CoinDto source) {
-        Coin coin = coinRepository.findById(targetId).get();
+        Coin coin = findCoin(targetId);
 
         coin.change(
                 source.getMarket(),
@@ -53,10 +54,15 @@ public class CoinService {
     }
 
     public Coin deleteCoin(Long id) {
-        Coin coin = coinRepository.findById(id).get();
+        Coin coin = findCoin(id);
 
         coinRepository.delete(coin);
 
         return coin;
+    }
+
+    private Coin findCoin(Long id) {
+        return coinRepository.findById(id)
+                .orElseThrow(() -> new CoinNotFoundException(id));
     }
 }
