@@ -2,6 +2,7 @@ package com.example.cotobang.service;
 
 import com.example.cotobang.domain.Coin;
 import com.example.cotobang.dto.CoinDto;
+import com.example.cotobang.errors.CoinNotFoundException;
 import com.example.cotobang.fixture.CoinFixtureFactory;
 import com.example.cotobang.respository.CoinRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @DisplayName("CoinService 클래스는")
@@ -98,6 +100,30 @@ class CoinServiceTest {
                 assertThat(coin.getKoreanName()).isEqualTo(givenCoinDto.getKoreanName());
             }
         }
+
+        @Nested
+        @DisplayName("유효하지 않은 id와 coin이 주어진다면")
+        class Context_with_invalid_id_and_coin {
+
+            Long givenId;
+            CoinDto givenCoinDto;
+
+            @BeforeEach
+            void prepare() {
+                Coin coin = coinFactory.createCoin();
+                givenId = coinRepository.save(coin).getId();
+                coinRepository.deleteById(givenId);
+
+                givenCoinDto = coinFactory.createCoinRequestDto();
+            }
+
+            @Test
+            @DisplayName("coin이 없다는 내용의 에외를 던집니다.")
+            void it_update_coin_return_coin() {
+                assertThatThrownBy(() -> coinService.updateCoin(givenId, givenCoinDto))
+                        .isInstanceOf(CoinNotFoundException.class);
+            }
+        }
     }
 
     @Nested
@@ -123,6 +149,28 @@ class CoinServiceTest {
 
                 Coin foundCoin = coinRepository.findById(givenId).orElse(null);
                 assertThat(foundCoin).isNull();
+            }
+        }
+
+        @Nested
+        @DisplayName("유효하지 않은 id가 주어진다면")
+        class Context_with_invalid_id {
+
+            Long givenId;
+
+            @BeforeEach
+            void prepare() {
+                Coin coin = coinFactory.createCoin();
+                givenId = coinRepository.save(coin).getId();
+
+                coinRepository.deleteById(givenId);
+            }
+
+            @Test
+            @DisplayName("coin이 없다는 내용의 에외를 던집니다.")
+            void it_update_coin_return_coin() {
+                assertThatThrownBy(() -> coinService.deleteCoin(givenId))
+                        .isInstanceOf(CoinNotFoundException.class);
             }
         }
     }
