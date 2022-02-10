@@ -28,7 +28,7 @@ class UserServiceTest {
 
         @Nested
         @DisplayName("user가 주어진다면")
-        class Context_with_user{
+        class Context_with_user {
 
             UserRegistrationDto givenUserRegistrationDto;
 
@@ -48,9 +48,7 @@ class UserServiceTest {
 
                 assertThat(user).isNotNull();
                 assertThat(user.getEmail()).isEqualTo(givenUserRegistrationDto.getEmail());
-
             }
-
         }
     }
 }
