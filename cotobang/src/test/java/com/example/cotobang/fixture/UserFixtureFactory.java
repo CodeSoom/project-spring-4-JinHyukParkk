@@ -11,4 +11,19 @@ public class UserFixtureFactory {
                 .password("1234")
                 .build();
     }
+
+    public UserRegistrationDto createUserRegistrationDtoWithInvalidEmail() {
+        return UserRegistrationDto.builder()
+                .email("pjh08190819")
+                .name("hyuk")
+                .password("1234")
+                .build();
+    }
+
+    public UserRegistrationDto createUserRegistrationDtoWithBlankEmail() {
+        return UserRegistrationDto.builder()
+                .name("hyuk")
+                .password("1234")
+                .build();
+    }
 }

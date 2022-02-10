@@ -69,6 +69,52 @@ class UserControllerTest {
                         .andDo(print());
             }
         }
+
+        @Nested
+        @DisplayName("email 형식이 잘못된 user가 주어진다면")
+        class Context_with_user_with_invalid_email {
+
+            UserRegistrationDto givenInvalidUserRegistrationDto;
+
+            @BeforeEach
+            void prepare() {
+                givenInvalidUserRegistrationDto = userFixtureFactory.createUserRegistrationDtoWithInvalidEmail();
+            }
+
+            @Test
+            @DisplayName("400(Bad Request)를 응답합니다.")
+            void it_return_ok_and_registed_user() throws Exception {
+                mockMvc.perform(
+                                post("/users")
+                                        .accept(MediaType.APPLICATION_JSON)
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(userRegistrationDtoToContent(givenInvalidUserRegistrationDto)))
+                        .andExpect(status().isBadRequest());
+            }
+        }
+
+        @Nested
+        @DisplayName("email 이 빈값인 user가 주어진다면")
+        class Context_with_user_with_blank_email {
+
+            UserRegistrationDto givenInvalidUserRegistrationDto;
+
+            @BeforeEach
+            void prepare() {
+                givenInvalidUserRegistrationDto = userFixtureFactory.createUserRegistrationDtoWithBlankEmail();
+            }
+
+            @Test
+            @DisplayName("400(Bad Request)를 응답합니다.")
+            void it_return_ok_and_registed_user() throws Exception {
+                mockMvc.perform(
+                                post("/users")
+                                        .accept(MediaType.APPLICATION_JSON)
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(userRegistrationDtoToContent(givenInvalidUserRegistrationDto)))
+                        .andExpect(status().isBadRequest());
+            }
+        }
     }
 
     private String userRegistrationDtoToContent(UserRegistrationDto userRegistrationDto) throws JsonProcessingException {
