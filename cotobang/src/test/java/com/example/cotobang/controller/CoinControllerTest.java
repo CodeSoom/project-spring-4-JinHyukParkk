@@ -89,7 +89,7 @@ class CoinControllerTest {
                                 post("/coins")
                                         .accept(MediaType.APPLICATION_JSON)
                                         .contentType(MediaType.APPLICATION_JSON)
-                                        .content(coinRequestDtoToContent(givenCoinDto)))
+                                        .content(coinDtoToContent(givenCoinDto)))
                         .andExpect(status().isCreated())
                         .andExpect(jsonPath("$.koreanName").value(givenCoinDto.getKoreanName()))
                         .andDo(print());
@@ -114,7 +114,7 @@ class CoinControllerTest {
                                 post("/coins")
                                         .accept(MediaType.APPLICATION_JSON)
                                         .contentType(MediaType.APPLICATION_JSON)
-                                        .content(coinRequestDtoToContent(givenBlankCoinDto)))
+                                        .content(coinDtoToContent(givenBlankCoinDto)))
                         .andExpect(status().isBadRequest())
                         .andDo(print());
             }
@@ -145,11 +145,39 @@ class CoinControllerTest {
             void it_update_coin_return_ok_and_coin() throws Exception {
                 mockMvc.perform(put("/coins/" + givenId)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(coinRequestDtoToContent(coinDto)))
+                                .content(coinDtoToContent(coinDto)))
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$.id").value(givenId))
                         .andExpect(jsonPath("$.koreanName").value(coinDto.getKoreanName()))
                         .andDo(print());
+            }
+        }
+
+        @Nested
+        @DisplayName("유효하지 않은 id와 coin이 주어진다면")
+        class Context_with_invalid_id_and_coin {
+
+            Long givenId;
+            CoinDto givenCoinDto;
+
+            @BeforeEach
+            void prepare() {
+                Coin coin = coinFactory.createCoin();
+                givenId = coinRepository.save(coin).getId();
+                coinRepository.deleteById(givenId);
+
+                givenCoinDto = coinFactory.createCoinRequestDto();
+            }
+
+            @Test
+            @DisplayName("404(Not Found)를 응답합니다.")
+            void it_update_coin_return_ok_and_coin() throws Exception {
+                mockMvc.perform(put("/coins/" + givenId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(coinDtoToContent(givenCoinDto)))
+                        .andExpect(status().isNotFound())
+                        .andDo(print());
+
             }
         }
     }
@@ -182,9 +210,33 @@ class CoinControllerTest {
                         .andDo(print());
             }
         }
+
+        @Nested
+        @DisplayName("유효하지 않은 id가 주어진다면")
+        class Context_with_invalid_id {
+
+            Long givenId;
+            Coin coin;
+
+            @BeforeEach
+            void prepare() {
+                coin = coinFactory.createCoin();
+                givenId = coinRepository.save(coin).getId();
+                coinRepository.deleteById(givenId);
+            }
+
+            @Test
+            @DisplayName("404(Not Found)를 응답합니다.")
+            void it_update_coin_return_ok_and_coin() throws Exception {
+                mockMvc.perform(delete("/coins/" + givenId)
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isNotFound())
+                        .andDo(print());
+            }
+        }
     }
 
-    private String coinRequestDtoToContent(CoinDto coinDto) throws JsonProcessingException {
+    private String coinDtoToContent(CoinDto coinDto) throws JsonProcessingException {
         return objectMapper.writeValueAsString(coinDto);
     }
 }
