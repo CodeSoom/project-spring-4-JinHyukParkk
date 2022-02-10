@@ -1,6 +1,7 @@
 package com.example.cotobang.controller;
 
 import com.example.cotobang.dto.UserRegistrationDto;
+import com.example.cotobang.fixture.UserFixtureFactory;
 import com.example.cotobang.respository.CoinRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,6 +34,13 @@ class UserControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    UserFixtureFactory userFixtureFactory;
+
+    @BeforeEach
+    void setUp() {
+        userFixtureFactory = new UserFixtureFactory();
+    }
+
     @Nested
     @DisplayName("POST /users 요청은")
     class Describe_post_user {
@@ -45,11 +53,7 @@ class UserControllerTest {
 
             @BeforeEach
             void prepare() {
-                givenUserRegistrationDto = UserRegistrationDto.builder()
-                        .email("pjh08190819@naver.com")
-                        .name("hyuk")
-                        .password("1234")
-                        .build();
+                givenUserRegistrationDto = userFixtureFactory.createUserRegistrationDto();
             }
 
             @Test

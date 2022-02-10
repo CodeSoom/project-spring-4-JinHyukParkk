@@ -2,6 +2,7 @@ package com.example.cotobang.service;
 
 import com.example.cotobang.domain.User;
 import com.example.cotobang.dto.UserRegistrationDto;
+import com.example.cotobang.fixture.UserFixtureFactory;
 import com.example.cotobang.respository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +23,13 @@ class UserServiceTest {
     @Autowired
     UserRepository userRepository;
 
+    UserFixtureFactory userFixtureFactory;
+
+    @BeforeEach
+    void setUp() {
+        userFixtureFactory = new UserFixtureFactory();
+    }
+
     @Nested
     @DisplayName("createUser 메소드는")
     class Describe_createUser {
@@ -34,11 +42,7 @@ class UserServiceTest {
 
             @BeforeEach
             void prepare() {
-                givenUserRegistrationDto = UserRegistrationDto.builder()
-                        .email("pjh08190819@naver.com")
-                        .name("hyuk")
-                        .password("1234")
-                        .build();
+                givenUserRegistrationDto = userFixtureFactory.createUserRegistrationDto();
             }
 
             @Test
