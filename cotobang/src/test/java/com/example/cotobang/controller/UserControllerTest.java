@@ -1,6 +1,6 @@
 package com.example.cotobang.controller;
 
-import com.example.cotobang.domain.User;
+import com.example.cotobang.dto.UserRegistrationDto;
 import com.example.cotobang.respository.CoinRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,11 +41,11 @@ class UserControllerTest {
         @DisplayName("user가 주어진다면")
         class Context_with_user {
 
-            User givenUser;
+            UserRegistrationDto givenUserRegistrationDto;
 
             @BeforeEach
             void prepare() {
-                givenUser = User.builder()
+                givenUserRegistrationDto = UserRegistrationDto.builder()
                         .email("pjh08190819@naver.com")
                         .name("hyuk")
                         .password("1234")
@@ -59,15 +59,15 @@ class UserControllerTest {
                                 post("/users")
                                         .accept(MediaType.APPLICATION_JSON)
                                         .contentType(MediaType.APPLICATION_JSON)
-                                        .content(userToContent(givenUser)))
+                                        .content(userRegistrationDtoToContent(givenUserRegistrationDto)))
                         .andExpect(status().isCreated())
-                        .andExpect(jsonPath("$.name").value(givenUser.getName()))
+                        .andExpect(jsonPath("$.name").value(givenUserRegistrationDto.getName()))
                         .andDo(print());
             }
         }
     }
 
-    private String userToContent(User user) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(user);
+    private String userRegistrationDtoToContent(UserRegistrationDto userRegistrationDto) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(userRegistrationDto);
     }
 }
