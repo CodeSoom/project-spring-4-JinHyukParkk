@@ -56,7 +56,7 @@ class CoinControllerTest {
 
         @Test
         @DisplayName("200(Ok)와 Coin의 전체 리스트를 응답합니다.")
-        void it_return_coins() throws Exception {
+        void it_response_200_and_coins() throws Exception {
             final int coinsSize = coinRepository.findAll().size();
 
             mockMvc.perform(
@@ -84,7 +84,7 @@ class CoinControllerTest {
 
             @Test
             @DisplayName("201(Created)와 등록된 Coin을 응답합니다.")
-            void it_return_ok_and_registed_coin() throws Exception {
+            void it_response_201_and_coin() throws Exception {
                 mockMvc.perform(
                                 post("/coins")
                                         .accept(MediaType.APPLICATION_JSON)
@@ -109,7 +109,7 @@ class CoinControllerTest {
 
             @Test
             @DisplayName("400(Bad Request)를 응답합니다.")
-            void it_return_bad_request() throws Exception {
+            void it_response_400() throws Exception {
                 mockMvc.perform(
                                 post("/coins")
                                         .accept(MediaType.APPLICATION_JSON)
@@ -142,7 +142,7 @@ class CoinControllerTest {
 
             @Test
             @DisplayName("200(Ok)와 수정된 coin을 응답합니다.")
-            void it_update_coin_return_ok_and_coin() throws Exception {
+            void it_response_200_and_coin() throws Exception {
                 mockMvc.perform(put("/coins/" + givenId)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(coinDtoToContent(coinDto)))
@@ -171,7 +171,7 @@ class CoinControllerTest {
 
             @Test
             @DisplayName("404(Not Found)를 응답합니다.")
-            void it_update_coin_return_ok_and_coin() throws Exception {
+            void it_response_404() throws Exception {
                 mockMvc.perform(put("/coins/" + givenId)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(coinDtoToContent(givenCoinDto)))
@@ -201,7 +201,7 @@ class CoinControllerTest {
 
             @Test
             @DisplayName("201(No Content)와 삭제된 coin을 응답합니다.")
-            void it_update_coin_return_ok_and_coin() throws Exception {
+            void it_response_201_and_coin() throws Exception {
                 mockMvc.perform(delete("/coins/" + givenId)
                                 .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isNoContent())
@@ -227,7 +227,7 @@ class CoinControllerTest {
 
             @Test
             @DisplayName("404(Not Found)를 응답합니다.")
-            void it_update_coin_return_ok_and_coin() throws Exception {
+            void it_response_404() throws Exception {
                 mockMvc.perform(delete("/coins/" + givenId)
                                 .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isNotFound())

@@ -58,7 +58,7 @@ class UserControllerTest {
 
             @Test
             @DisplayName("201(Created)와 등록된 user를 응답합니다.")
-            void it_return_ok_and_registed_user() throws Exception {
+            void it_response_201_and_user() throws Exception {
                 mockMvc.perform(
                                 post("/users")
                                         .accept(MediaType.APPLICATION_JSON)
@@ -83,7 +83,7 @@ class UserControllerTest {
 
             @Test
             @DisplayName("400(Bad Request)를 응답합니다.")
-            void it_return_ok_and_registed_user() throws Exception {
+            void it_response_400() throws Exception {
                 mockMvc.perform(
                                 post("/users")
                                         .accept(MediaType.APPLICATION_JSON)
@@ -106,7 +106,7 @@ class UserControllerTest {
 
             @Test
             @DisplayName("400(Bad Request)를 응답합니다.")
-            void it_return_ok_and_registed_user() throws Exception {
+            void it_response_400() throws Exception {
                 mockMvc.perform(
                                 post("/users")
                                         .accept(MediaType.APPLICATION_JSON)
