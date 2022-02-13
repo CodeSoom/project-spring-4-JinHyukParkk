@@ -4,7 +4,7 @@ import com.example.cotobang.dto.UserRegistrationDto;
 
 public class UserFixtureFactory {
 
-    public UserRegistrationDto createUserRegistrationDto() {
+    public UserRegistrationDto create_사용자_등록_DTO() {
         return UserRegistrationDto.builder()
                 .email("pjh08190819@naver.com")
                 .name("hyuk")
@@ -12,7 +12,7 @@ public class UserFixtureFactory {
                 .build();
     }
 
-    public UserRegistrationDto createUserRegistrationDtoWithInvalidEmail() {
+    public UserRegistrationDto create_잘못된_이메일을_갖는_사용자_DTO() {
         return UserRegistrationDto.builder()
                 .email("pjh08190819")
                 .name("hyuk")
@@ -20,7 +20,7 @@ public class UserFixtureFactory {
                 .build();
     }
 
-    public UserRegistrationDto createUserRegistrationDtoWithBlankEmail() {
+    public UserRegistrationDto create_빈값_이메일을_갖는_사용자_DTO() {
         return UserRegistrationDto.builder()
                 .name("hyuk")
                 .password("1234")

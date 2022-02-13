@@ -53,7 +53,7 @@ class UserControllerTest {
 
             @BeforeEach
             void prepare() {
-                givenUserRegistrationDto = userFixtureFactory.createUserRegistrationDto();
+                givenUserRegistrationDto = userFixtureFactory.create_사용자_등록_DTO();
             }
 
             @Test
@@ -78,7 +78,7 @@ class UserControllerTest {
 
             @BeforeEach
             void prepare() {
-                givenInvalidUserRegistrationDto = userFixtureFactory.createUserRegistrationDtoWithInvalidEmail();
+                givenInvalidUserRegistrationDto = userFixtureFactory.create_잘못된_이메일을_갖는_사용자_DTO();
             }
 
             @Test
@@ -101,7 +101,7 @@ class UserControllerTest {
 
             @BeforeEach
             void prepare() {
-                givenInvalidUserRegistrationDto = userFixtureFactory.createUserRegistrationDtoWithBlankEmail();
+                givenInvalidUserRegistrationDto = userFixtureFactory.create_빈값_이메일을_갖는_사용자_DTO();
             }
 
             @Test

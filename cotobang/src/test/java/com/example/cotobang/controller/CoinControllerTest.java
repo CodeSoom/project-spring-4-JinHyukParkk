@@ -46,7 +46,7 @@ class CoinControllerTest {
     void setUp() {
         coinFactory = new CoinFixtureFactory();
 
-        Coin coin = coinFactory.createCoin();
+        Coin coin = coinFactory.create_코인();
         coinRepository.save(coin);
     }
 
@@ -79,7 +79,7 @@ class CoinControllerTest {
 
             @BeforeEach
             void prepare() {
-                givenCoinDto = coinFactory.createCoinRequestDto();
+                givenCoinDto = coinFactory.create_코인_DTO();
             }
 
             @Test
@@ -104,7 +104,7 @@ class CoinControllerTest {
 
             @BeforeEach
             void prepare() {
-                givenBlankCoinDto = coinFactory.createBlankCoinRequestDto();
+                givenBlankCoinDto = coinFactory.create_빈값_영어이름을_갖는_코인_DTO();
             }
 
             @Test
@@ -134,10 +134,10 @@ class CoinControllerTest {
 
             @BeforeEach
             void prepare() {
-                Coin coin = coinFactory.createCoin();
+                Coin coin = coinFactory.create_코인();
                 givenId = coinRepository.save(coin).getId();
 
-                coinDto = coinFactory.createCoinRequestDto();
+                coinDto = coinFactory.create_코인_DTO();
             }
 
             @Test
@@ -162,11 +162,11 @@ class CoinControllerTest {
 
             @BeforeEach
             void prepare() {
-                Coin coin = coinFactory.createCoin();
+                Coin coin = coinFactory.create_코인();
                 givenId = coinRepository.save(coin).getId();
                 coinRepository.deleteById(givenId);
 
-                givenCoinDto = coinFactory.createCoinRequestDto();
+                givenCoinDto = coinFactory.create_코인_DTO();
             }
 
             @Test
@@ -195,7 +195,7 @@ class CoinControllerTest {
 
             @BeforeEach
             void prepare() {
-                coin = coinFactory.createCoin();
+                coin = coinFactory.create_코인();
                 givenId = coinRepository.save(coin).getId();
             }
 
@@ -220,7 +220,7 @@ class CoinControllerTest {
 
             @BeforeEach
             void prepare() {
-                coin = coinFactory.createCoin();
+                coin = coinFactory.create_코인();
                 givenId = coinRepository.save(coin).getId();
                 coinRepository.deleteById(givenId);
             }
