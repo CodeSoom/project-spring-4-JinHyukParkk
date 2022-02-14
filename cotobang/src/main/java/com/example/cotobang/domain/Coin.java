@@ -9,7 +9,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -27,6 +31,10 @@ public class Coin {
     private String englishName;
 
     private String description;
+
+    @OneToMany
+    @JoinColumn(name = "coin_id")
+    private List<Comment> comments = new ArrayList<>();
 
     private LocalDateTime createdAt;
 

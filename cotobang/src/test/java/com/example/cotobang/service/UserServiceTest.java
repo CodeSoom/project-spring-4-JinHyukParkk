@@ -42,7 +42,7 @@ class UserServiceTest {
 
             @BeforeEach
             void prepare() {
-                givenUserRegistrationDto = userFixtureFactory.createUserRegistrationDto();
+                givenUserRegistrationDto = userFixtureFactory.create_사용자_등록_DTO();
             }
 
             @Test
