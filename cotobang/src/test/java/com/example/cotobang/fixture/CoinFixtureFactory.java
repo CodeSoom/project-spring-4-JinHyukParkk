@@ -5,7 +5,7 @@ import com.example.cotobang.dto.CoinDto;
 
 public class CoinFixtureFactory {
 
-    public Coin createCoin() {
+    public Coin create_코인() {
         return Coin.builder()
                 .market("KRW-BTC")
                 .koreanName("비트코인")
@@ -14,7 +14,7 @@ public class CoinFixtureFactory {
                 .build();
     }
 
-    public CoinDto createCoinRequestDto() {
+    public CoinDto create_코인_DTO() {
         return CoinDto.builder()
                 .market("KRW-SOL")
                 .koreanName("솔라나")
@@ -23,9 +23,12 @@ public class CoinFixtureFactory {
                 .build();
     }
 
-    public CoinDto createBlankCoinRequestDto() {
+    public CoinDto create_빈값_영어이름을_갖는_코인_DTO() {
         return CoinDto.builder()
+                .market("KRW-WEMIX")
                 .koreanName("위믹스")
+                .englishName("")
+                .description("위메이드 관련 코인입니다.")
                 .build();
     }
 }

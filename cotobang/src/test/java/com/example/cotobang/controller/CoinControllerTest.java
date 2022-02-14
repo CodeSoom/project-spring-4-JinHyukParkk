@@ -46,7 +46,7 @@ class CoinControllerTest {
     void setUp() {
         coinFactory = new CoinFixtureFactory();
 
-        Coin coin = coinFactory.createCoin();
+        Coin coin = coinFactory.create_코인();
         coinRepository.save(coin);
     }
 
@@ -56,7 +56,7 @@ class CoinControllerTest {
 
         @Test
         @DisplayName("200(Ok)와 Coin의 전체 리스트를 응답합니다.")
-        void it_return_coins() throws Exception {
+        void it_response_200_and_coins() throws Exception {
             final int coinsSize = coinRepository.findAll().size();
 
             mockMvc.perform(
@@ -79,12 +79,12 @@ class CoinControllerTest {
 
             @BeforeEach
             void prepare() {
-                givenCoinDto = coinFactory.createCoinRequestDto();
+                givenCoinDto = coinFactory.create_코인_DTO();
             }
 
             @Test
             @DisplayName("201(Created)와 등록된 Coin을 응답합니다.")
-            void it_return_ok_and_registed_coin() throws Exception {
+            void it_response_201_and_coin() throws Exception {
                 mockMvc.perform(
                                 post("/coins")
                                         .accept(MediaType.APPLICATION_JSON)
@@ -104,12 +104,12 @@ class CoinControllerTest {
 
             @BeforeEach
             void prepare() {
-                givenBlankCoinDto = coinFactory.createBlankCoinRequestDto();
+                givenBlankCoinDto = coinFactory.create_빈값_영어이름을_갖는_코인_DTO();
             }
 
             @Test
             @DisplayName("400(Bad Request)를 응답합니다.")
-            void it_return_bad_request() throws Exception {
+            void it_response_400() throws Exception {
                 mockMvc.perform(
                                 post("/coins")
                                         .accept(MediaType.APPLICATION_JSON)
@@ -134,15 +134,15 @@ class CoinControllerTest {
 
             @BeforeEach
             void prepare() {
-                Coin coin = coinFactory.createCoin();
+                Coin coin = coinFactory.create_코인();
                 givenId = coinRepository.save(coin).getId();
 
-                coinDto = coinFactory.createCoinRequestDto();
+                coinDto = coinFactory.create_코인_DTO();
             }
 
             @Test
             @DisplayName("200(Ok)와 수정된 coin을 응답합니다.")
-            void it_update_coin_return_ok_and_coin() throws Exception {
+            void it_response_200_and_coin() throws Exception {
                 mockMvc.perform(put("/coins/" + givenId)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(coinDtoToContent(coinDto)))
@@ -162,16 +162,16 @@ class CoinControllerTest {
 
             @BeforeEach
             void prepare() {
-                Coin coin = coinFactory.createCoin();
+                Coin coin = coinFactory.create_코인();
                 givenId = coinRepository.save(coin).getId();
                 coinRepository.deleteById(givenId);
 
-                givenCoinDto = coinFactory.createCoinRequestDto();
+                givenCoinDto = coinFactory.create_코인_DTO();
             }
 
             @Test
             @DisplayName("404(Not Found)를 응답합니다.")
-            void it_update_coin_return_ok_and_coin() throws Exception {
+            void it_response_404() throws Exception {
                 mockMvc.perform(put("/coins/" + givenId)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(coinDtoToContent(givenCoinDto)))
@@ -195,13 +195,13 @@ class CoinControllerTest {
 
             @BeforeEach
             void prepare() {
-                coin = coinFactory.createCoin();
+                coin = coinFactory.create_코인();
                 givenId = coinRepository.save(coin).getId();
             }
 
             @Test
             @DisplayName("201(No Content)와 삭제된 coin을 응답합니다.")
-            void it_update_coin_return_ok_and_coin() throws Exception {
+            void it_response_201_and_coin() throws Exception {
                 mockMvc.perform(delete("/coins/" + givenId)
                                 .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isNoContent())
@@ -220,14 +220,14 @@ class CoinControllerTest {
 
             @BeforeEach
             void prepare() {
-                coin = coinFactory.createCoin();
+                coin = coinFactory.create_코인();
                 givenId = coinRepository.save(coin).getId();
                 coinRepository.deleteById(givenId);
             }
 
             @Test
             @DisplayName("404(Not Found)를 응답합니다.")
-            void it_update_coin_return_ok_and_coin() throws Exception {
+            void it_response_404() throws Exception {
                 mockMvc.perform(delete("/coins/" + givenId)
                                 .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isNotFound())

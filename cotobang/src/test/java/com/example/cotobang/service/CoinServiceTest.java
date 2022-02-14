@@ -31,7 +31,7 @@ class CoinServiceTest {
     void setUp() {
         coinFactory = new CoinFixtureFactory();
 
-        Coin coin = coinFactory.createCoin();
+        Coin coin = coinFactory.create_코인();
         coinRepository.save(coin);
     }
 
@@ -60,7 +60,7 @@ class CoinServiceTest {
 
             @BeforeEach
             void prepare() {
-                givenCoinDto = coinFactory.createCoinRequestDto();
+                givenCoinDto = coinFactory.create_코인_DTO();
             }
 
             @Test
@@ -86,10 +86,10 @@ class CoinServiceTest {
 
             @BeforeEach
             void prepare() {
-                Coin coin = coinFactory.createCoin();
+                Coin coin = coinFactory.create_코인();
                 givenId = coinRepository.save(coin).getId();
 
-                givenCoinDto = coinFactory.createCoinRequestDto();
+                givenCoinDto = coinFactory.create_코인_DTO();
             }
 
             @Test
@@ -110,11 +110,11 @@ class CoinServiceTest {
 
             @BeforeEach
             void prepare() {
-                Coin coin = coinFactory.createCoin();
+                Coin coin = coinFactory.create_코인();
                 givenId = coinRepository.save(coin).getId();
                 coinRepository.deleteById(givenId);
 
-                givenCoinDto = coinFactory.createCoinRequestDto();
+                givenCoinDto = coinFactory.create_코인_DTO();
             }
 
             @Test
@@ -138,7 +138,7 @@ class CoinServiceTest {
 
             @BeforeEach
             void prepare() {
-                Coin coin = coinFactory.createCoin();
+                Coin coin = coinFactory.create_코인();
                 givenId = coinRepository.save(coin).getId();
             }
 
@@ -160,7 +160,7 @@ class CoinServiceTest {
 
             @BeforeEach
             void prepare() {
-                Coin coin = coinFactory.createCoin();
+                Coin coin = coinFactory.create_코인();
                 givenId = coinRepository.save(coin).getId();
 
                 coinRepository.deleteById(givenId);
