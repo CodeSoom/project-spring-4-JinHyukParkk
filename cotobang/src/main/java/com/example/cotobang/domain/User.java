@@ -36,4 +36,21 @@ public class User {
         this.name = name;
         this.password = password;
     }
+
+    public void change(String name, String password) {
+        this.name = name;
+        this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }

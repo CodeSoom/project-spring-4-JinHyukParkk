@@ -5,8 +5,10 @@ import com.example.cotobang.dto.UserModificationDto;
 import com.example.cotobang.dto.UserRegistrationDto;
 import com.example.cotobang.respository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
@@ -26,6 +28,12 @@ public class UserService {
     }
 
     public User updateUser(Long id, UserModificationDto userModificationDto) {
-        return null;
+        User user = userRepository.findById(id).orElse(null);
+
+        user.change(
+                userModificationDto.getName(),
+                userModificationDto.getPassword());
+
+        return user;
     }
 }
