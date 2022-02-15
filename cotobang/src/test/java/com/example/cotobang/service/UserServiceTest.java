@@ -82,4 +82,31 @@ class UserServiceTest {
             assertThat(user.getName()).isEqualTo(givenUserModificationDto.getName());
         }
     }
+
+    @Nested
+    @DisplayName("deleteUser 메소드는")
+    class Describe_deleteUser {
+
+        @Nested
+        @DisplayName("id가 주어진다면")
+        class Context_with_id {
+
+            Long givenId;
+
+            @BeforeEach
+            void prepare() {
+                User user = userFixtureFactory.create_사용자();
+                givenId = userRepository.save(user)
+                        .getId();
+            }
+
+            @Test
+            @DisplayName("user를 삭제하고 리턴합니다.")
+            void it_delete_user_return_user() {
+                User user = userService.delete(givenId);
+
+                assertThat(user).isNotNull();
+            }
+        }
+    }
 }

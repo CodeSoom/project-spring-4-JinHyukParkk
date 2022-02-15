@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
+@Where(clause = "deleted = false")
 public class User {
 
     @Id
@@ -25,6 +26,8 @@ public class User {
     private String name;
 
     private String password;
+
+    private boolean deleted = false;
 
     private LocalDateTime createdAt;
 
@@ -40,6 +43,10 @@ public class User {
     public void change(String name, String password) {
         this.name = name;
         this.password = password;
+    }
+
+    public void destory() {
+        this.deleted = true;
     }
 
     @Override

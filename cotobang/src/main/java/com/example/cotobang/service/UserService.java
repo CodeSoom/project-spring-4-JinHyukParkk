@@ -28,12 +28,29 @@ public class UserService {
     }
 
     public User updateUser(Long id, UserModificationDto userModificationDto) {
-        User user = userRepository.findById(id).orElse(null);
+        User user = getUser(id);
 
         user.change(
                 userModificationDto.getName(),
                 userModificationDto.getPassword());
 
         return user;
+    }
+
+    public User delete(Long id) {
+        User user = getUser(id);
+
+        if (user.isDeleted()) {
+            return null;
+        }
+
+        user.destory();
+
+        return user;
+    }
+
+    private User getUser(Long id) {
+        return userRepository.findById(id)
+                .orElse(null);
     }
 }
