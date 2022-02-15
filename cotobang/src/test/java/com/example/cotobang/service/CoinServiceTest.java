@@ -87,7 +87,8 @@ class CoinServiceTest {
             @BeforeEach
             void prepare() {
                 Coin coin = coinFactory.create_코인();
-                givenId = coinRepository.save(coin).getId();
+                givenId = coinRepository.save(coin)
+                        .getId();
 
                 givenCoinDto = coinFactory.create_코인_DTO();
             }

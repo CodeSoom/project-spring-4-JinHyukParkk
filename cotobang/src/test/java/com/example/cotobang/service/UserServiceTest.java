@@ -1,6 +1,7 @@
 package com.example.cotobang.service;
 
 import com.example.cotobang.domain.User;
+import com.example.cotobang.dto.UserModificationDto;
 import com.example.cotobang.dto.UserRegistrationDto;
 import com.example.cotobang.fixture.UserFixtureFactory;
 import com.example.cotobang.respository.UserRepository;
@@ -53,6 +54,32 @@ class UserServiceTest {
                 assertThat(user).isNotNull();
                 assertThat(user.getEmail()).isEqualTo(givenUserRegistrationDto.getEmail());
             }
+        }
+    }
+
+    @Nested
+    @DisplayName("updateUser 메소드는")
+    class Describe_updateUser {
+
+        Long givenId;
+        UserModificationDto givenUserModificationDto;
+
+        @BeforeEach
+        void prepare() {
+            User user = userFixtureFactory.create_사용자();
+            givenId = userRepository.save(user)
+                    .getId();
+
+            givenUserModificationDto = userFixtureFactory.create_사용자_수정_DTO();
+        }
+
+        @Test
+        @DisplayName("user를 업데이트하고 리턴합니다.")
+        void it_update_user_return_user() {
+            User user = userService.updateUser(givenId, givenUserModificationDto);
+
+            assertThat(user).isNotNull();
+            assertThat(user.getName()).isEqualTo(givenUserModificationDto.getName());
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.cotobang.service;
 
 import com.example.cotobang.domain.User;
+import com.example.cotobang.dto.UserModificationDto;
 import com.example.cotobang.dto.UserRegistrationDto;
 import com.example.cotobang.respository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,6 @@ public class UserService {
     }
 
     public User createUser(UserRegistrationDto userRegistrationDto) {
-
         User user = User.builder()
                 .email(userRegistrationDto.getEmail())
                 .name(userRegistrationDto.getName())
@@ -23,5 +23,9 @@ public class UserService {
                 .build();
 
         return userRepository.save(user);
+    }
+
+    public User updateUser(Long id, UserModificationDto userModificationDto) {
+        return null;
     }
 }
