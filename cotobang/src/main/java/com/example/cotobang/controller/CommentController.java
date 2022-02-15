@@ -15,7 +15,7 @@ public class CommentController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Coin> list() {
+    public List<Comment> list() {
         return null;
     }
 }
