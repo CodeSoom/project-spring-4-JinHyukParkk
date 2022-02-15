@@ -135,7 +135,7 @@ class UserControllerTest {
             @BeforeEach
             void prepare() {
                 User user = userFixtureFactory.create_사용자();
-                userRepository.save(user);
+                givenId = userRepository.save(user).getId();
 
                 givenUserModificationDto = userFixtureFactory.create_사용자_수정_DTO();
             }

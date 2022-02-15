@@ -5,6 +5,7 @@ import com.example.cotobang.dto.UserModificationDto;
 import com.example.cotobang.dto.UserRegistrationDto;
 import com.example.cotobang.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,8 +32,11 @@ public class UserController {
         return userService.createUser(userRegistrationDto);
     }
 
-    @RequestMapping(path = "/{id}", method = {RequestMethod.PUT, RequestMethod.PATCH})
-    User update(@RequestBody @Valid UserModificationDto modificationDto) {
-        return null;
+    @RequestMapping(path = "{id}", method = {RequestMethod.PUT, RequestMethod.PATCH})
+    @ResponseStatus(HttpStatus.OK)
+    User update(
+            @PathVariable Long id,
+            @RequestBody @Valid UserModificationDto modificationDto) {
+        return userService.updateUser(id, modificationDto);
     }
 }
