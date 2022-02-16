@@ -1,6 +1,6 @@
 package com.example.cotobang.controller;
 
-import com.example.cotobang.domain.Coin;
+import com.example.cotobang.domain.Comment;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
