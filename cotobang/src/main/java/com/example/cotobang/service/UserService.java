@@ -3,6 +3,7 @@ package com.example.cotobang.service;
 import com.example.cotobang.domain.User;
 import com.example.cotobang.dto.UserModificationDto;
 import com.example.cotobang.dto.UserRegistrationDto;
+import com.example.cotobang.errors.UserNotFoundException;
 import com.example.cotobang.respository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +42,7 @@ public class UserService {
         User user = getUser(id);
 
         if (user.isDeleted()) {
-            return null;
+            throw new UserNotFoundException(id);
         }
 
         user.destory();
@@ -51,6 +52,6 @@ public class UserService {
 
     private User getUser(Long id) {
         return userRepository.findById(id)
-                .orElse(null);
+                .orElseThrow(() -> new UserNotFoundException(id));
     }
 }
