@@ -1,4 +1,4 @@
-package com.example.cotobang.controller;
+package com.example.cotobang.service;
 
 import com.example.cotobang.domain.Coin;
 import com.example.cotobang.domain.Comment;
@@ -9,44 +9,30 @@ import com.example.cotobang.fixture.UserFixtureFactory;
 import com.example.cotobang.respository.CoinRepository;
 import com.example.cotobang.respository.CommentRepository;
 import com.example.cotobang.respository.UserRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-@DisplayName("CommentController 클래스")
-@AutoConfigureMockMvc
-class CommentControllerTest {
+@SpringBootTest
+@DisplayName("CommentService 클래스")
+class CommentServiceTest {
 
     @Autowired
-    MockMvc mockMvc;
+    CommentService commentService;
 
     @Autowired
-    CommentController commentController;
-
-    @Autowired
-    ObjectMapper objectMapper;
+    CommentRepository commentRepository;
 
     @Autowired
     CoinRepository coinRepository;
 
     @Autowired
     UserRepository userRepository;
-
-    @Autowired
-    CommentRepository commentRepository;
 
     CoinFixtureFactory coinFixtureFactory;
 
@@ -62,12 +48,14 @@ class CommentControllerTest {
     }
 
     @Nested
-    @DisplayName("GET /comments/{coin_id}")
-    class Describe_get_comments {
+    @DisplayName("getComments() 메소드는")
+    class Describe_getComments {
 
         @Nested
         @DisplayName("coin id가 주어진다면")
         class Context_with_coin_id {
+
+            Long givenCoinId;
 
             @BeforeEach
             void prepare() {
@@ -77,15 +65,14 @@ class CommentControllerTest {
                 Comment comment = commentFixtureFactory.create_댓글(coin, user);
 
                 commentRepository.save(comment);
+
+                givenCoinId = coin.getId();
             }
 
             @Test
-            void it_response_200_and_comments() throws Exception {
-                mockMvc.perform(
-                                get("/comments"))
-                        .andExpect(status().isOk())
-                        .andExpect(jsonPath("$", hasSize(1)))
-                        .andDo(print());
+            @DisplayName("조회된 comment 리스트를 응답합니다.")
+            void it_return_comments() throws Exception {
+                assertThat(commentService.getComments(givenCoinId)).hasSize(1);
             }
         }
     }
