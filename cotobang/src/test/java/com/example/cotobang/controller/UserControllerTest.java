@@ -1,8 +1,10 @@
 package com.example.cotobang.controller;
 
+import com.example.cotobang.domain.User;
+import com.example.cotobang.dto.UserModificationDto;
 import com.example.cotobang.dto.UserRegistrationDto;
 import com.example.cotobang.fixture.UserFixtureFactory;
-import com.example.cotobang.respository.CoinRepository;
+import com.example.cotobang.respository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +17,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,7 +33,7 @@ class UserControllerTest {
     MockMvc mockMvc;
 
     @Autowired
-    CoinRepository coinRepository;
+    UserRepository userRepository;
 
     @Autowired
     ObjectMapper objectMapper;
@@ -117,7 +121,74 @@ class UserControllerTest {
         }
     }
 
+    @Nested
+    @DisplayName("PUT,PATCH /users/{id} 요청은")
+    class Describe_put_patch_user {
+
+        @Nested
+        @DisplayName("id와 user 정보가 주어진다면")
+        class Context_with_id_and_user {
+
+            Long givenId;
+            UserModificationDto givenUserModificationDto;
+
+            @BeforeEach
+            void prepare() {
+                User user = userFixtureFactory.create_사용자();
+                givenId = userRepository.save(user)
+                        .getId();
+
+                givenUserModificationDto = userFixtureFactory.create_사용자_수정_DTO();
+            }
+
+            @Test
+            @DisplayName("200(Ok)와 수정된 user를 응답합니다.")
+            void it_response_200_and_user() throws Exception {
+                mockMvc.perform(put("/users/" + givenId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(userModificationDtoDtoToContent(givenUserModificationDto)))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.id").value(givenId))
+                        .andExpect(jsonPath("$.name").value(givenUserModificationDto.getName()))
+                        .andDo(print());
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("DELETE /users/{id} 요청은")
+    class Describe_detele_user {
+
+        @Nested
+        @DisplayName("id가 주어진다면")
+        class Context_with_id {
+
+            Long givenId;
+
+            @BeforeEach
+            void prepare() {
+                User user = userFixtureFactory.create_사용자();
+                givenId = userRepository.save(user)
+                        .getId();
+            }
+
+            @Test
+            @DisplayName("204(No content)와 삭제된 user를 응답합니다.")
+            void it_response_204_and_user() throws Exception {
+                mockMvc.perform(delete("/users/" + givenId)
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isNoContent())
+                        .andExpect(jsonPath("$.id").value(givenId))
+                        .andDo(print());
+            }
+        }
+    }
+
     private String userRegistrationDtoToContent(UserRegistrationDto userRegistrationDto) throws JsonProcessingException {
         return objectMapper.writeValueAsString(userRegistrationDto);
+    }
+
+    private String userModificationDtoDtoToContent(UserModificationDto userModificationDto) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(userModificationDto);
     }
 }
