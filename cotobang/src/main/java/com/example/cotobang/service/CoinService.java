@@ -29,6 +29,11 @@ public class CoinService {
         return coinRepository.findAll();
     }
 
+    public Coin getCoin(Long id) {
+        return coinRepository.findById(id)
+                .orElseThrow(() -> new CoinNotFoundException(id));
+    }
+
     public Coin createCoin(CoinDto coinDto) {
         final Coin coin = Coin.builder()
                 .market(coinDto.getMarket())
@@ -41,7 +46,7 @@ public class CoinService {
     }
 
     public Coin updateCoin(Long targetId, CoinDto source) {
-        Coin coin = findCoin(targetId);
+        Coin coin = getCoin(targetId);
 
         coin.change(
                 source.getMarket(),
@@ -54,15 +59,10 @@ public class CoinService {
     }
 
     public Coin deleteCoin(Long id) {
-        Coin coin = findCoin(id);
+        Coin coin = getCoin(id);
 
         coinRepository.delete(coin);
 
         return coin;
-    }
-
-    private Coin findCoin(Long id) {
-        return coinRepository.findById(id)
-                .orElseThrow(() -> new CoinNotFoundException(id));
     }
 }
