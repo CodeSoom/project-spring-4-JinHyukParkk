@@ -109,7 +109,7 @@ class UserServiceTest {
 
             @Test
             @DisplayName("user가 없다는 내용의 예외를 던집니다.")
-            void it_update_user_return_user() {
+            void it_throw_UserNotFoundException() {
                 assertThatThrownBy(() -> userService.updateUser(givenInvalidId, givenUserModificationDto),
                         "업데이트할 User가 없습니다.")
                         .isInstanceOf(UserNotFoundException.class);
@@ -161,7 +161,7 @@ class UserServiceTest {
 
             @Test
             @DisplayName("user가 없다는 내용의 예외를 던집니다.")
-            void it_update_user_return_user() {
+            void it_throw_UserNotFoundException() {
                 assertThatThrownBy(() -> userService.delete(givenInvalidId),
                         "삭제할 user가 없습니다.")
                         .isInstanceOf(UserNotFoundException.class);
