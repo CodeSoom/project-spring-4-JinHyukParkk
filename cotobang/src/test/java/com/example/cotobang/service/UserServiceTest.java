@@ -3,6 +3,7 @@ package com.example.cotobang.service;
 import com.example.cotobang.domain.User;
 import com.example.cotobang.dto.UserModificationDto;
 import com.example.cotobang.dto.UserRegistrationDto;
+import com.example.cotobang.errors.UserNotFoundException;
 import com.example.cotobang.fixture.UserFixtureFactory;
 import com.example.cotobang.respository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @DisplayName("UserService 클래스는")
@@ -61,25 +63,57 @@ class UserServiceTest {
     @DisplayName("updateUser 메소드는")
     class Describe_updateUser {
 
-        Long givenId;
-        UserModificationDto givenUserModificationDto;
+        @Nested
+        @DisplayName("id와 user가 주어진다면")
+        class Context_with_id_and_user {
 
-        @BeforeEach
-        void prepare() {
-            User user = userFixtureFactory.create_사용자();
-            givenId = userRepository.save(user)
-                    .getId();
+            Long givenId;
+            UserModificationDto givenUserModificationDto;
 
-            givenUserModificationDto = userFixtureFactory.create_사용자_수정_DTO();
+            @BeforeEach
+            void prepare() {
+                User user = userFixtureFactory.create_사용자();
+                givenId = userRepository.save(user)
+                        .getId();
+
+                givenUserModificationDto = userFixtureFactory.create_사용자_수정_DTO();
+            }
+
+            @Test
+            @DisplayName("user를 업데이트하고 리턴합니다.")
+            void it_update_user_return_user() {
+                User user = userService.updateUser(givenId, givenUserModificationDto);
+
+                assertThat(user).isNotNull();
+                assertThat(user.getName()).isEqualTo(givenUserModificationDto.getName());
+            }
         }
 
-        @Test
-        @DisplayName("user를 업데이트하고 리턴합니다.")
-        void it_update_user_return_user() {
-            User user = userService.updateUser(givenId, givenUserModificationDto);
+        @Nested
+        @DisplayName("유효하지 않는 id와 user가 주어진다면")
+        class Context_with_invalid_id_and_user {
 
-            assertThat(user).isNotNull();
-            assertThat(user.getName()).isEqualTo(givenUserModificationDto.getName());
+            Long givenInvalidId;
+            UserModificationDto givenUserModificationDto;
+
+            @BeforeEach
+            void prepare() {
+                User user = userRepository.save(
+                        userFixtureFactory.create_사용자()
+                );
+                userRepository.delete(user);
+
+                givenInvalidId = user.getId();
+                givenUserModificationDto = userFixtureFactory.create_사용자_수정_DTO();
+            }
+
+            @Test
+            @DisplayName("user가 없다는 내용의 예외를 던집니다.")
+            void it_update_user_return_user() {
+                assertThatThrownBy(() -> userService.updateUser(givenInvalidId, givenUserModificationDto),
+                        "업데이트할 User가 없습니다.")
+                        .isInstanceOf(UserNotFoundException.class);
+            }
         }
     }
 
@@ -106,6 +140,31 @@ class UserServiceTest {
                 User user = userService.delete(givenId);
 
                 assertThat(user).isNotNull();
+            }
+        }
+
+        @Nested
+        @DisplayName("유효하지 않는 id가 주어진다면")
+        class Context_with_invalid_id {
+
+            Long givenInvalidId;
+
+            @BeforeEach
+            void prepare() {
+                User user = userRepository.save(
+                        userFixtureFactory.create_사용자()
+                );
+                userRepository.delete(user);
+
+                givenInvalidId = user.getId();
+            }
+
+            @Test
+            @DisplayName("user가 없다는 내용의 예외를 던집니다.")
+            void it_update_user_return_user() {
+                assertThatThrownBy(() -> userService.delete(givenInvalidId),
+                        "삭제할 user가 없습니다.")
+                        .isInstanceOf(UserNotFoundException.class);
             }
         }
     }
