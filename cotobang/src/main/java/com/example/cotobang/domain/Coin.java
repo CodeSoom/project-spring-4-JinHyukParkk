@@ -32,10 +32,6 @@ public class Coin {
 
     private String description;
 
-    @OneToMany
-    @JoinColumn(name = "coin_id")
-    private List<Comment> comments = new ArrayList<>();
-
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
