@@ -14,9 +14,25 @@ public class UserFixtureFactory {
                 .build();
     }
 
+    public User create_중복테스트용_사용자() {
+        return User.builder()
+                .email("duplication@naver.com")
+                .name("hyuk")
+                .password("1234")
+                .build();
+    }
+
     public UserRegistrationDto create_사용자_등록_DTO() {
         return UserRegistrationDto.builder()
                 .email("pjh08190819@naver.com")
+                .name("hyuk")
+                .password("1234")
+                .build();
+    }
+
+    public UserRegistrationDto create_중복테스트용_사용자_등록_DTO() {
+        return UserRegistrationDto.builder()
+                .email("duplication@naver.com")
                 .name("hyuk")
                 .password("1234")
                 .build();

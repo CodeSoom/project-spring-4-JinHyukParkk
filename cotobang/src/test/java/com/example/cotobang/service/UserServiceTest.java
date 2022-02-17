@@ -3,10 +3,11 @@ package com.example.cotobang.service;
 import com.example.cotobang.domain.User;
 import com.example.cotobang.dto.UserModificationDto;
 import com.example.cotobang.dto.UserRegistrationDto;
-import com.example.cotobang.errors.UserEmailDuplication;
+import com.example.cotobang.errors.UserEmailDuplicationException;
 import com.example.cotobang.errors.UserNotFoundException;
 import com.example.cotobang.fixture.UserFixtureFactory;
 import com.example.cotobang.respository.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -67,8 +68,8 @@ class UserServiceTest {
 
             @BeforeEach
             void prepare() {
-                userRepository.save(userFixtureFactory.create_사용자());
-                givenUserRegistrationDto = userFixtureFactory.create_사용자_등록_DTO();
+                userRepository.save(userFixtureFactory.create_중복테스트용_사용자());
+                givenUserRegistrationDto = userFixtureFactory.create_중복테스트용_사용자_등록_DTO();
             }
 
             @Test
