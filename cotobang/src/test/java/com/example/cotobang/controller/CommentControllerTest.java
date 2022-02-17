@@ -16,9 +16,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -26,8 +25,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DisplayName("CommentController 클래스")
 @AutoConfigureMockMvc
+@SpringBootTest
+@DisplayName("CommentController 클래스")
 class CommentControllerTest {
 
     @Autowired
@@ -69,20 +69,22 @@ class CommentControllerTest {
         @DisplayName("coin id가 주어진다면")
         class Context_with_coin_id {
 
+            Long givenCoidId;
+
             @BeforeEach
             void prepare() {
                 Coin coin = coinRepository.save(coinFixtureFactory.create_코인());
                 User user = userRepository.save(userFixtureFactory.create_사용자());
 
                 Comment comment = commentFixtureFactory.create_댓글(coin, user);
-
                 commentRepository.save(comment);
+
+                givenCoidId = coin.getId();
             }
 
             @Test
             void it_response_200_and_comments() throws Exception {
-                mockMvc.perform(
-                                get("/comments"))
+                mockMvc.perform(get("/comments/" + givenCoidId))
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$", hasSize(1)))
                         .andDo(print());
