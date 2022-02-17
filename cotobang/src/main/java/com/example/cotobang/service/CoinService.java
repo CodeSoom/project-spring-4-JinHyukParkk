@@ -5,6 +5,7 @@ import com.example.cotobang.dto.CoinDto;
 import com.example.cotobang.errors.CoinNotFoundException;
 import com.example.cotobang.respository.CoinRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
  * 코인에 대한 로직 처리
  */
 @Service
+@Transactional
 public class CoinService {
 
     private final CoinRepository coinRepository;
