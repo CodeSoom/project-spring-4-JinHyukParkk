@@ -76,7 +76,7 @@ class UserServiceTest {
             void it_throw_UserEmailDuplication() {
                 assertThatThrownBy(() -> userService.createUser(givenUserRegistrationDto),
                         "유저의 email이 중복되었습니다.")
-                        .isInstanceOf(UserEmailDuplication.class);
+                        .isInstanceOf(UserEmailDuplicationException.class);
             }
         }
     }
