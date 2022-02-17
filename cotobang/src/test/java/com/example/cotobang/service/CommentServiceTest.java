@@ -55,24 +55,23 @@ class CommentServiceTest {
         @DisplayName("coin id가 주어진다면")
         class Context_with_coin_id {
 
-            Long givenCoinId;
+            Coin givenCoin;
 
             @BeforeEach
             void prepare() {
-                Coin coin = coinRepository.save(coinFixtureFactory.create_코인());
+                givenCoin = coinRepository.save(coinFixtureFactory.create_코인());
                 User user = userRepository.save(userFixtureFactory.create_사용자());
 
-                Comment comment = commentFixtureFactory.create_댓글(coin, user);
+                Comment comment = commentFixtureFactory.create_댓글(givenCoin, user);
 
                 commentRepository.save(comment);
-
-                givenCoinId = coin.getId();
             }
 
             @Test
             @DisplayName("조회된 comment 리스트를 응답합니다.")
             void it_return_comments() throws Exception {
-                assertThat(commentService.getComments(givenCoinId)).hasSize(1);
+                assertThat(commentService.getComments(givenCoin))
+                        .hasSize(1);
             }
         }
     }
