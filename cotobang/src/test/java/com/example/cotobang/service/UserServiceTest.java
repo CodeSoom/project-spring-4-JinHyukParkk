@@ -3,6 +3,7 @@ package com.example.cotobang.service;
 import com.example.cotobang.domain.User;
 import com.example.cotobang.dto.UserModificationDto;
 import com.example.cotobang.dto.UserRegistrationDto;
+import com.example.cotobang.errors.UserEmailDuplication;
 import com.example.cotobang.errors.UserNotFoundException;
 import com.example.cotobang.fixture.UserFixtureFactory;
 import com.example.cotobang.respository.UserRepository;
@@ -55,6 +56,27 @@ class UserServiceTest {
 
                 assertThat(user).isNotNull();
                 assertThat(user.getEmail()).isEqualTo(givenUserRegistrationDto.getEmail());
+            }
+        }
+
+        @Nested
+        @DisplayName("중복된 email의 user가 주어진다면")
+        class Context_with_user_with_duplicated_email {
+
+            UserRegistrationDto givenUserRegistrationDto;
+
+            @BeforeEach
+            void prepare() {
+                userRepository.save(userFixtureFactory.create_사용자());
+                givenUserRegistrationDto = userFixtureFactory.create_사용자_등록_DTO();
+            }
+
+            @Test
+            @DisplayName("중복된 email을 가진 유저가 있다는 내용의 예외를 던집니다.")
+            void it_throw_UserEmailDuplication() {
+                assertThatThrownBy(() -> userService.createUser(givenUserRegistrationDto),
+                        "유저의 email이 중복되었습니다.")
+                        .isInstanceOf(UserEmailDuplication.class);
             }
         }
     }
