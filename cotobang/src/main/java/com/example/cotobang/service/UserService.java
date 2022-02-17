@@ -3,6 +3,7 @@ package com.example.cotobang.service;
 import com.example.cotobang.domain.User;
 import com.example.cotobang.dto.UserModificationDto;
 import com.example.cotobang.dto.UserRegistrationDto;
+import com.example.cotobang.errors.UserEmailDuplication;
 import com.example.cotobang.errors.UserNotFoundException;
 import com.example.cotobang.respository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,12 @@ public class UserService {
     }
 
     public User createUser(UserRegistrationDto userRegistrationDto) {
+        String email = userRegistrationDto.getEmail();
+
+        if (userRepository.existsByEmail(email)) {
+            throw new UserEmailDuplication(email);
+        }
+        
         User user = User.builder()
                 .email(userRegistrationDto.getEmail())
                 .name(userRegistrationDto.getName())
