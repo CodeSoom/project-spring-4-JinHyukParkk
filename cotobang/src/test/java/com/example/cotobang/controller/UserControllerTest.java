@@ -121,6 +121,31 @@ class UserControllerTest {
                         .andExpect(status().isBadRequest());
             }
         }
+
+        @Nested
+        @DisplayName("중복된 email을 가진 user가 주어진다면")
+        class Context_with_user_with_duplicated_email {
+
+            UserRegistrationDto givenUserRegistrationDto;
+
+            @BeforeEach
+            void prepare() {
+                userRepository.save(userFixtureFactory.create_사용자());
+
+                givenUserRegistrationDto = userFixtureFactory.create_사용자_등록_DTO();
+            }
+
+            @Test
+            @DisplayName("404(Not Found)를 응답합니다.")
+            void it_response_404() throws Exception {
+                mockMvc.perform(
+                                post("/users")
+                                        .accept(MediaType.APPLICATION_JSON)
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(userRegistrationDtoToContent(givenUserRegistrationDto)))
+                        .andExpect(status().isNotFound());
+            }
+        }
     }
 
     @Nested
