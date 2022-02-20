@@ -4,7 +4,6 @@ import com.example.cotobang.domain.User;
 import com.example.cotobang.dto.UserModificationDto;
 import com.example.cotobang.dto.UserRegistrationDto;
 import com.example.cotobang.service.UserService;
-import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;

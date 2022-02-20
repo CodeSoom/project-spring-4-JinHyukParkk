@@ -7,7 +7,6 @@ import com.example.cotobang.errors.UserEmailDuplicationException;
 import com.example.cotobang.errors.UserNotFoundException;
 import com.example.cotobang.fixture.UserFixtureFactory;
 import com.example.cotobang.respository.UserRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
