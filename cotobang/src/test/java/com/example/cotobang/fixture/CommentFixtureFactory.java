@@ -3,6 +3,7 @@ package com.example.cotobang.fixture;
 import com.example.cotobang.domain.Coin;
 import com.example.cotobang.domain.Comment;
 import com.example.cotobang.domain.User;
+import com.example.cotobang.dto.CommentDto;
 
 public class CommentFixtureFactory {
 
@@ -11,6 +12,14 @@ public class CommentFixtureFactory {
                 .comment("테스트")
                 .coin(coin)
                 .user(user)
+                .build();
+    }
+
+    public CommentDto create_댓글_요청_DTO(Long coinId, Long userId) {
+        return CommentDto.builder()
+                .comment("테스트")
+                .coinId(coinId)
+                .userId(userId)
                 .build();
     }
 }
