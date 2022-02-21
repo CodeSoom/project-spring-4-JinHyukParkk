@@ -119,6 +119,31 @@ class UserControllerTest {
                         .andExpect(status().isBadRequest());
             }
         }
+
+        @Nested
+        @DisplayName("중복된 email을 가진 user가 주어진다면")
+        class Context_with_user_with_duplicated_email {
+
+            UserRegistrationDto givenUserRegistrationDto;
+
+            @BeforeEach
+            void prepare() {
+                userRepository.save(userFixtureFactory.create_중복테스트용_사용자());
+
+                givenUserRegistrationDto = userFixtureFactory.create_중복테스트용_사용자_등록_DTO();
+            }
+
+            @Test
+            @DisplayName("404(Not Found)를 응답합니다.")
+            void it_response_404() throws Exception {
+                mockMvc.perform(
+                                post("/users")
+                                        .accept(MediaType.APPLICATION_JSON)
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(userRegistrationDtoToContent(givenUserRegistrationDto)))
+                        .andExpect(status().isNotFound());
+            }
+        }
     }
 
     @Nested
@@ -153,6 +178,35 @@ class UserControllerTest {
                         .andDo(print());
             }
         }
+
+        @Nested
+        @DisplayName("유효하지 않는 id와 user가 주어진다면")
+        class Context_with_invalid_id_and_user {
+
+            Long givenInvalidId;
+            UserModificationDto givenUserModificationDto;
+
+            @BeforeEach
+            void prepare() {
+                User user = userRepository.save(
+                        userFixtureFactory.create_사용자()
+                );
+                userRepository.delete(user);
+
+                givenInvalidId = user.getId();
+                givenUserModificationDto = userFixtureFactory.create_사용자_수정_DTO();
+            }
+
+            @Test
+            @DisplayName("404(Not Found)를 응답합니다.")
+            void it_response_404() throws Exception {
+                mockMvc.perform(put("/users/" + givenInvalidId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(userModificationDtoDtoToContent(givenUserModificationDto)))
+                        .andExpect(status().isNotFound())
+                        .andDo(print());
+            }
+        }
     }
 
     @Nested
@@ -179,6 +233,32 @@ class UserControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isNoContent())
                         .andExpect(jsonPath("$.id").value(givenId))
+                        .andDo(print());
+            }
+        }
+
+        @Nested
+        @DisplayName("유효하지 않는 id가 주어진다면")
+        class Context_with_invalid_id {
+
+            Long givenInvalidId;
+
+            @BeforeEach
+            void prepare() {
+                User user = userRepository.save(
+                        userFixtureFactory.create_사용자()
+                );
+                userRepository.delete(user);
+
+                givenInvalidId = user.getId();
+            }
+
+            @Test
+            @DisplayName("404(Not Found)를 응답합니다.")
+            void it_throw_UserNotFoundException() throws Exception {
+                mockMvc.perform(delete("/users/" + givenInvalidId)
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isNotFound())
                         .andDo(print());
             }
         }

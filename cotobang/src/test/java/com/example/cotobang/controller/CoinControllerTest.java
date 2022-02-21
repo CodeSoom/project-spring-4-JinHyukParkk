@@ -177,7 +177,6 @@ class CoinControllerTest {
                                 .content(coinDtoToContent(givenCoinDto)))
                         .andExpect(status().isNotFound())
                         .andDo(print());
-
             }
         }
     }
