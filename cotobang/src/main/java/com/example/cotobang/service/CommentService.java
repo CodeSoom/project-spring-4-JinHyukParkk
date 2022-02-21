@@ -2,6 +2,7 @@ package com.example.cotobang.service;
 
 import com.example.cotobang.domain.Coin;
 import com.example.cotobang.domain.Comment;
+import com.example.cotobang.dto.CommentDto;
 import com.example.cotobang.respository.CommentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,5 +21,9 @@ public class CommentService {
 
     public List<Comment> getComments(Coin coin) {
         return commentRepository.findByCoin(coin);
+    }
+
+    public Comment createComment(CommentDto commentDto) {
+        return null;
     }
 }
