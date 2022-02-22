@@ -55,7 +55,11 @@ public class CommentController {
 
     @RequestMapping(path = "{id}", method = {RequestMethod.PUT, RequestMethod.PATCH})
     @ResponseStatus(HttpStatus.OK)
-    public Comment update(@RequestBody CommentDto commentDto) {
-        return null;
+    public Comment update(@PathVariable Long id,
+                          @RequestBody CommentDto commentDto) {
+        Coin coin = coinService.getCoin(commentDto.getCoinId());
+        User user = userService.getUser(commentDto.getUserId());
+
+        return commentService.updateComment(id, commentDto, coin, user);
     }
 }
