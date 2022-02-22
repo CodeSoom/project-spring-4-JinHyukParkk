@@ -8,6 +8,7 @@ import com.example.cotobang.service.CoinService;
 import com.example.cotobang.service.CommentService;
 import com.example.cotobang.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,5 +62,11 @@ public class CommentController {
         User user = userService.getUser(commentDto.getUserId());
 
         return commentService.updateComment(id, commentDto, coin, user);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Comment delete(@PathVariable Long id) {
+        return null;
     }
 }

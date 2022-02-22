@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -143,7 +144,7 @@ class CommentControllerTest {
     class Describe_put_patch_comments {
 
         @Nested
-        @DisplayName("댓글 id와 CommentDto가 주어진다면")
+        @DisplayName("comment id와 CommentDto가 주어진다면")
         class Context_with_comment_id_and_commentDto {
 
             Long givenCommentId;
@@ -171,6 +172,35 @@ class CommentControllerTest {
                         .andExpect(jsonPath("$.user.id").value(givenCommentDto.getUserId()))
                         .andExpect(jsonPath("$.coin.id").value(givenCommentDto.getCoinId()))
                         .andDo(print());
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("DELETE /commments/{id}")
+    class Describe_delete_comments {
+
+        @Nested
+        @DisplayName("comment id가 주어진다면")
+        class Context_with_comment_id {
+
+            Long givenCommentId;
+
+            @BeforeEach
+            void prepare() {
+                Comment comment = commentFixtureFactory.create_댓글(coin, user);
+                givenCommentId = commentRepository.save(comment).getId();
+            }
+
+            @Test
+            @DisplayName("204(No Content)와 삭제된 Comment를 응답합니다.")
+            void it_response_204_and_comment() throws Exception {
+                mockMvc.perform(delete("/comments/" + givenCommentId)
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isNoContent())
+                        .andExpect(jsonPath("$.id").value(givenCommentId))
+                        .andDo(print());
+
             }
         }
     }
