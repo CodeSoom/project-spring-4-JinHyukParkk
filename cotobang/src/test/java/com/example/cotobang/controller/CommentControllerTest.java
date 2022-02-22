@@ -23,9 +23,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -97,7 +99,7 @@ class CommentControllerTest {
                 mockMvc.perform(get("/comments")
                                 .param("coin_id", givenCoidId.toString()))
                         .andExpect(status().isOk())
-                        .andExpect(jsonPath("$", hasSize(1)))
+                        .andExpect(jsonPath("$", hasSize(greaterThan(0))))
                         .andDo(print());
             }
         }
@@ -160,8 +162,7 @@ class CommentControllerTest {
             @Test
             @DisplayName("200(Ok)와 수정된 comment을 응답합니다.")
             void it_response_200_and_comment() throws Exception {
-                mockMvc.perform(
-                                post("/comments/" + givenCommentId)
+                mockMvc.perform(put("/comments/" + givenCommentId)
                                         .accept(MediaType.APPLICATION_JSON)
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(commentDtoToContent(givenCommentDto)))
