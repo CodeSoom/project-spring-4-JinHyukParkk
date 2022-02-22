@@ -79,7 +79,7 @@ class CommentServiceTest {
             @DisplayName("조회된 comment 리스트를 응답합니다.")
             void it_return_comments() throws Exception {
                 assertThat(commentService.getComments(givenCoin))
-                        .hasSize(1);
+                        .hasSizeGreaterThan(0);
             }
         }
     }

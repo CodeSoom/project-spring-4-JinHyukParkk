@@ -168,6 +168,8 @@ class CommentControllerTest {
                                         .content(commentDtoToContent(givenCommentDto)))
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$.comment").value(givenCommentDto.getComment()))
+                        .andExpect(jsonPath("$.user.id").value(givenCommentDto.getUserId()))
+                        .andExpect(jsonPath("$.coin.id").value(givenCommentDto.getCoinId()))
                         .andDo(print());
             }
         }
