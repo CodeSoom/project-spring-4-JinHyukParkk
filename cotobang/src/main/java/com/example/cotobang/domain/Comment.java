@@ -43,4 +43,8 @@ public class Comment {
         this.coin = coin;
         this.user = user;
     }
+
+    public void change(String comment) {
+        this.comment = comment;
+    }
 }

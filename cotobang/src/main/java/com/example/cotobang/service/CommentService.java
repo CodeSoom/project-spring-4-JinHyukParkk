@@ -40,6 +40,14 @@ public class CommentService {
                                  CommentDto commentDto,
                                  Coin coin,
                                  User user) {
-        return null;
+        Comment comment = getComment(id);
+
+        comment.change(commentDto.getComment());
+
+        return comment;
+    }
+
+    private Comment getComment(Long id) {
+        return commentRepository.getById(id);
     }
 }
