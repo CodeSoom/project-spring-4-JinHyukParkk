@@ -74,7 +74,7 @@ class CommentControllerTest {
     }
 
     @Nested
-    @DisplayName("GET /comments/{coin_id}")
+    @DisplayName("GET /comments")
     class Describe_get_comments {
 
         @Nested
@@ -92,6 +92,7 @@ class CommentControllerTest {
             }
 
             @Test
+            @DisplayName("200(Ok)와 댓글 리스트를 응답합니다.")
             void it_response_200_and_comments() throws Exception {
                 mockMvc.perform(get("/comments")
                                 .param("coin_id", givenCoidId.toString()))
@@ -103,19 +104,17 @@ class CommentControllerTest {
     }
 
     @Nested
-    @DisplayName("POST /comments/{coid_id}")
+    @DisplayName("POST /comments")
     class Describe_post_comments {
 
         @Nested
-        @DisplayName("coin id와 user id와 comment가 주어진다면")
-        class Context_with_coinId_and_userId_and_comment {
+        @DisplayName("CommentDto가 주어진다면")
+        class Context_with_commentDto {
 
-            Long givenCoidId;
             CommentDto givenCommentDto;
 
             @BeforeEach
             void prepare() {
-                givenCoidId = coin.getId();
                 givenCommentDto = commentFixtureFactory.create_댓글_요청_DTO(
                         coin.getId(),
                         user.getId()
@@ -123,14 +122,50 @@ class CommentControllerTest {
             }
 
             @Test
+            @DisplayName("201(Created)와 등록된 comment을 응답합니다.")
             void it_response_201_and_comment() throws Exception {
                 mockMvc.perform(
                                 post("/comments")
-                                        .param("coin_id", givenCoidId.toString())
                                         .accept(MediaType.APPLICATION_JSON)
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(commentDtoToContent(givenCommentDto)))
                         .andExpect(status().isCreated())
+                        .andExpect(jsonPath("$.comment").value(givenCommentDto.getComment()))
+                        .andDo(print());
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("PUT,PATCH /comments/{id}")
+    class Describe_put_patch_comments {
+
+        @Nested
+        @DisplayName("댓글 id와 CommentDto가 주어진다면")
+        class Context_with_comment_id_and_commentDto {
+
+            Long givenCommentId;
+            CommentDto givenCommentDto;
+
+            @BeforeEach
+            void prepare() {
+                Comment comment = commentFixtureFactory.create_댓글(coin, user);
+                givenCommentId = commentRepository.save(comment).getId();
+                givenCommentDto = commentFixtureFactory.create_댓글_요청_DTO(
+                        coin.getId(),
+                        user.getId()
+                );
+            }
+
+            @Test
+            @DisplayName("200(Ok)와 수정된 comment을 응답합니다.")
+            void it_response_200_and_comment() throws Exception {
+                mockMvc.perform(
+                                post("/comments/" + givenCommentId)
+                                        .accept(MediaType.APPLICATION_JSON)
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(commentDtoToContent(givenCommentDto)))
+                        .andExpect(status().isOk())
                         .andExpect(jsonPath("$.comment").value(givenCommentDto.getComment()))
                         .andDo(print());
             }
