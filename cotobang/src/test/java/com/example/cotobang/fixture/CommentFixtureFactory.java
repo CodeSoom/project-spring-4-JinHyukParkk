@@ -9,16 +9,15 @@ public class CommentFixtureFactory {
 
     public Comment create_댓글(Coin coin , User user) {
         return Comment.builder()
-                .comment("테스트")
+                .comment("테스트 Comment")
                 .coin(coin)
                 .user(user)
                 .build();
     }
 
-    public CommentDto create_댓글_요청_DTO(Long coinId, Long userId) {
+    public CommentDto create_댓글_요청_DTO(Long userId) {
         return CommentDto.builder()
-                .comment("테스트")
-                .coinId(coinId)
+                .comment("테스트 CommentDTO")
                 .userId(userId)
                 .build();
     }

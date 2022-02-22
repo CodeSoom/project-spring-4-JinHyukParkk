@@ -96,16 +96,13 @@ class CommentServiceTest {
 
             @BeforeEach
             void prepare() {
-                givenCommentDto = commentFixtureFactory.create_댓글_요청_DTO(
-                        coin.getId(),
-                        user.getId()
-                );
+                givenCommentDto = commentFixtureFactory.create_댓글_요청_DTO(user.getId());
             }
 
             @Test
             @DisplayName("Comment를 생성하고 리턴합니다.")
             void it_create_comment_reture_comment() {
-                Comment comment = commentService.createComment(givenCommentDto);
+                Comment comment = commentService.createComment(givenCommentDto, coin, user);
 
                 assertThat(comment).isNotNull();
                 assertThat(comment.getComment())
