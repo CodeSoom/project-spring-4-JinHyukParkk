@@ -89,8 +89,8 @@ class CommentServiceTest {
     class Describe_createComment {
 
         @Nested
-        @DisplayName("Comment 정보와 coin id와 user id가 주어진다면")
-        class Context_with_comment_and_coin_id_and_user_id {
+        @DisplayName("Comment 정보가 주어진다면")
+        class Context_with_commentDto{
 
             CommentDto givenCommentDto;
 
@@ -103,9 +103,42 @@ class CommentServiceTest {
             }
 
             @Test
-            @DisplayName("Comment를 생성하고 리턴합니다.")
+            @DisplayName("comment를 생성하고 리턴합니다.")
             void it_create_comment_reture_comment() {
                 Comment comment = commentService.createComment(givenCommentDto, coin, user);
+
+                assertThat(comment).isNotNull();
+                assertThat(comment.getComment())
+                        .isEqualTo(givenCommentDto.getComment());
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("updateComment() 메소드는")
+    class Describe_updateComment {
+
+        @Nested
+        @DisplayName("comment id와 comment 정보가 주어진다면")
+        class Context_with_comment_id_and_commentDto {
+
+            Long givenCommentId;
+            CommentDto givenCommentDto;
+
+            @BeforeEach
+            void prepare() {
+                Comment comment = commentFixtureFactory.create_댓글(coin, user);
+                givenCommentId = commentRepository.save(comment).getId();
+                givenCommentDto = commentFixtureFactory.create_댓글_요청_DTO(
+                        coin.getId(),
+                        user.getId()
+                );
+            }
+
+            @Test
+            @DisplayName("comment를 수정하고 반환합니다.")
+            void it_update_comment_reture_comment() {
+                Comment comment = commentService.updateComment(givenCommentId, givenCommentDto, coin, user);
 
                 assertThat(comment).isNotNull();
                 assertThat(comment.getComment())

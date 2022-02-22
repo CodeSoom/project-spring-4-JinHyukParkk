@@ -24,7 +24,9 @@ public class CommentService {
         return commentRepository.findByCoin(coin);
     }
 
-    public Comment createComment(CommentDto commentDto, Coin coin, User user) {
+    public Comment createComment(CommentDto commentDto,
+                                 Coin coin,
+                                 User user) {
         Comment comment = Comment.builder()
                 .comment(commentDto.getComment())
                 .coin(coin)
@@ -32,5 +34,12 @@ public class CommentService {
                 .build();
 
         return commentRepository.save(comment);
+    }
+
+    public Comment updateComment(Long id,
+                                 CommentDto commentDto,
+                                 Coin coin,
+                                 User user) {
+        return null;
     }
 }
