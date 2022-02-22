@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,19 +35,18 @@ public class CommentController {
         this.userService = userService;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Comment> list(@PathVariable Long id) {
-        Coin coin = coinService.getCoin(id);
+    public List<Comment> list(@RequestParam("coin_id") Long coinId) {
+        Coin coin = coinService.getCoin(coinId);
 
         return commentService.getComments(coin);
     }
 
-    @PostMapping("/{id}")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Comment create(@PathVariable Long id,
-                          @RequestBody CommentDto commentDto) {
-        Coin coin = coinService.getCoin(id);
+    public Comment create(@RequestBody CommentDto commentDto) {
+        Coin coin = coinService.getCoin(commentDto.getCoinId());
         User user = userService.getUser(commentDto.getUserId());
 
         return commentService.createComment(commentDto, coin, user);

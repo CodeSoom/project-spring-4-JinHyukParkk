@@ -93,7 +93,8 @@ class CommentControllerTest {
 
             @Test
             void it_response_200_and_comments() throws Exception {
-                mockMvc.perform(get("/comments/" + givenCoidId))
+                mockMvc.perform(get("/comments")
+                                .param("coin_id", givenCoidId.toString()))
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$", hasSize(1)))
                         .andDo(print());
@@ -116,6 +117,7 @@ class CommentControllerTest {
             void prepare() {
                 givenCoidId = coin.getId();
                 givenCommentDto = commentFixtureFactory.create_댓글_요청_DTO(
+                        coin.getId(),
                         user.getId()
                 );
             }
@@ -123,7 +125,8 @@ class CommentControllerTest {
             @Test
             void it_response_201_and_comment() throws Exception {
                 mockMvc.perform(
-                                post("/comments/" + givenCoidId)
+                                post("/comments")
+                                        .param("coin_id", givenCoidId.toString())
                                         .accept(MediaType.APPLICATION_JSON)
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(commentDtoToContent(givenCommentDto)))

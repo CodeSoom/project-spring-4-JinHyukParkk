@@ -96,7 +96,10 @@ class CommentServiceTest {
 
             @BeforeEach
             void prepare() {
-                givenCommentDto = commentFixtureFactory.create_댓글_요청_DTO(user.getId());
+                givenCommentDto = commentFixtureFactory.create_댓글_요청_DTO(
+                        coin.getId(),
+                        user.getId()
+                );
             }
 
             @Test
