@@ -109,12 +109,13 @@ class CommentControllerTest {
         @DisplayName("coin id와 user id와 comment가 주어진다면")
         class Context_with_coinId_and_userId_and_comment {
 
+            Long givenCoidId;
             CommentDto givenCommentDto;
 
             @BeforeEach
             void prepare() {
+                givenCoidId = coin.getId();
                 givenCommentDto = commentFixtureFactory.create_댓글_요청_DTO(
-                        coin.getId(),
                         user.getId()
                 );
             }
@@ -122,7 +123,7 @@ class CommentControllerTest {
             @Test
             void it_response_201_and_comment() throws Exception {
                 mockMvc.perform(
-                                post("/comments")
+                                post("/comments/" + givenCoidId)
                                         .accept(MediaType.APPLICATION_JSON)
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(commentDtoToContent(givenCommentDto)))
