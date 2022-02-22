@@ -141,9 +141,32 @@ class CommentServiceTest {
                 Comment comment = commentService.updateComment(givenCommentId, givenCommentDto, coin, user);
 
                 assertThat(comment).isNotNull();
-                assertThat(comment.getComment())
-                        .isEqualTo(givenCommentDto.getComment());
+                assertThat(comment.getId())
+                        .isEqualTo(givenCommentId);
             }
+        }
+    }
+
+    @Nested
+    @DisplayName("deleteComment() 메소드는")
+    class Describe_deleteComment {
+
+        Long givenCommentId;
+
+        @BeforeEach
+        void prepare() {
+            Comment comment = commentFixtureFactory.create_댓글(coin, user);
+            givenCommentId = commentRepository.save(comment).getId();
+        }
+
+        @Test
+        @DisplayName("comment를 삭제하고 반환합니다.")
+        void it_delete_comment_return_comment() {
+            Comment comment = commentService.deleteComment(givenCommentId);
+
+            assertThat(comment).isNotNull();
+            assertThat(comment.getId())
+                    .isEqualTo(givenCommentId);
         }
     }
 }

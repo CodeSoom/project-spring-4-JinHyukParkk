@@ -47,6 +47,10 @@ public class CommentService {
         return comment;
     }
 
+    public Comment deleteComment(Long id) {
+        return null;
+    }
+
     private Comment getComment(Long id) {
         return commentRepository.getById(id);
     }
