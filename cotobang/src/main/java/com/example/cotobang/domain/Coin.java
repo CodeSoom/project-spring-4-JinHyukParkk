@@ -9,12 +9,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class Coin {
+public class Coin extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,10 +26,6 @@ public class Coin {
     private String englishName;
 
     private String description;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 
     @Builder
     public Coin(String market,
@@ -51,5 +46,16 @@ public class Coin {
         this.koreanName = koreanName;
         this.englishName = englishName;
         this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "Coin{" +
+                "id=" + id +
+                ", market='" + market + '\'' +
+                ", koreanName='" + koreanName + '\'' +
+                ", englishName='" + englishName + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
 }

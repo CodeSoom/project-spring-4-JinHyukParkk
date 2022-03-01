@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Comment {
+public class Comment extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,10 +32,6 @@ public class Comment {
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 
     @Builder
     public Comment(String comment, Coin coin, User user) {

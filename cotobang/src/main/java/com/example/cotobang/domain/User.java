@@ -9,13 +9,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @Where(clause = "deleted = false")
-public class User {
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,10 +27,6 @@ public class User {
     private String password;
 
     private boolean deleted = false;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 
     @Builder
     public User(String email, String name, String password) {
@@ -51,13 +46,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
+        return String.format("User{id=%s, email=%s, name=%s, password=%s}",
+                id, email, name, password);
     }
 }
