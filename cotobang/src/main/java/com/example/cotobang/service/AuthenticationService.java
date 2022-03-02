@@ -3,6 +3,7 @@ package com.example.cotobang.service;
 import com.example.cotobang.domain.User;
 import com.example.cotobang.dto.SessionRequestData;
 import com.example.cotobang.respository.UserRepository;
+import com.example.cotobang.utils.JwtUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,12 +13,20 @@ public class AuthenticationService {
 
     private final UserRepository userRepository;
 
-    public AuthenticationService(UserRepository userRepository) {
+    private final JwtUtil jwtUtil;
+
+    public AuthenticationService(UserRepository userRepository,
+                                 JwtUtil jwtUtil) {
         this.userRepository = userRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     public String login(SessionRequestData sessionRequestData) {
+        final String email = sessionRequestData.getEmail();
+        final String password = sessionRequestData.getPassword();
 
-        return null;
+        User user = userRepository.findByEmail(email);
+
+        return jwtUtil.encode(user.getId());
     }
 }
