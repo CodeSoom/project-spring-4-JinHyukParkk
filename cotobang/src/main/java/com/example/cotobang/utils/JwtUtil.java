@@ -1,5 +1,6 @@
 package com.example.cotobang.utils;
 
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,8 @@ public class JwtUtil {
     }
 
     public String encode(Long userId) {
-        return null;
+        return Jwts.builder()
+                .claim("userId", userId)
+                .signWith(key).compact();
     }
 }
