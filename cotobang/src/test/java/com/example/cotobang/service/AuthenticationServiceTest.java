@@ -94,7 +94,7 @@ class AuthenticationServiceTest {
 
             @BeforeEach
             void prepare() {
-                givenSessionRequestData = sessionFixtureFactory.a_유저_세션_요청_데이터();
+                givenSessionRequestData = sessionFixtureFactory.c_유저_세션_요청_데이터();
 
                 User user = User.builder()
                         .email(givenSessionRequestData.getEmail())

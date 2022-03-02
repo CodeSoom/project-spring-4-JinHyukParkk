@@ -17,4 +17,11 @@ public class SessionFixtureFactory {
                 .password("test123")
                 .build();
     }
+
+    public SessionRequestData c_유저_세션_요청_데이터() {
+        return SessionRequestData.builder()
+                .email("cuser@test.com")
+                .password("test123")
+                .build();
+    }
 }
