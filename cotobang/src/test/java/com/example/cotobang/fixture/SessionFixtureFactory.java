@@ -4,9 +4,16 @@ import com.example.cotobang.dto.SessionRequestData;
 
 public class SessionFixtureFactory {
 
-    public SessionRequestData 세션_요청_데이터() {
+    public SessionRequestData a_유저_세션_요청_데이터() {
         return SessionRequestData.builder()
-                .email("pjh0819@test.com")
+                .email("auser@test.com")
+                .password("test123")
+                .build();
+    }
+
+    public SessionRequestData b_유저_세션_요청_데이터() {
+        return SessionRequestData.builder()
+                .email("buser@test.com")
                 .password("test123")
                 .build();
     }

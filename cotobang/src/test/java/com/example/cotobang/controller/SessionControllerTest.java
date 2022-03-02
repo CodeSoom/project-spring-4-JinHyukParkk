@@ -2,6 +2,7 @@ package com.example.cotobang.controller;
 
 import com.example.cotobang.domain.User;
 import com.example.cotobang.dto.SessionRequestData;
+import com.example.cotobang.fixture.SessionFixtureFactory;
 import com.example.cotobang.respository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,14 +36,11 @@ class SessionControllerTest {
     @Autowired
     private UserRepository userRepository;
 
-    SessionRequestData sessionRequestData;
+    SessionFixtureFactory sessionFixtureFactory;
 
     @BeforeEach
-    void setUp() {
-        sessionRequestData = SessionRequestData.builder()
-                .email("pjh08190819@codesom.com")
-                .password("123456")
-                .build();
+    void prepare() {
+        sessionFixtureFactory = new SessionFixtureFactory();
     }
 
     @Nested
@@ -53,11 +51,15 @@ class SessionControllerTest {
         @DisplayName("SessionRequestData가 주어진다면")
         class Context_with_sessionRequestData {
 
+            SessionRequestData givenSessionRequestData;
+
             @BeforeEach
             void prepare() {
+                givenSessionRequestData = sessionFixtureFactory.b_유저_세션_요청_데이터();
+
                 User user = User.builder()
-                        .email(sessionRequestData.getEmail())
-                        .password(sessionRequestData.getPassword())
+                        .email(givenSessionRequestData.getEmail())
+                        .password(givenSessionRequestData.getPassword())
                         .build();
 
                 userRepository.save(user);
@@ -67,8 +69,8 @@ class SessionControllerTest {
             @DisplayName("access token을 응답합니다.")
             void it_return_accessToken() throws Exception {
                 mockMvc.perform(post("/session")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(sessionRequestDataToContent(sessionRequestData)))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(sessionRequestDataToContent(givenSessionRequestData)))
                         .andExpect(status().isCreated())
                         .andExpect(jsonPath("$.accessToken").value(containsString(".")))
                         .andDo(print());

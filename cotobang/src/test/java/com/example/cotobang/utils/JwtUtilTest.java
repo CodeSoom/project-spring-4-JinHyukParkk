@@ -20,7 +20,9 @@ class JwtUtilTest {
     class Describe_encode {
 
         Long givenUserId = 1L;
-        String givenValidToken = "";
+        String givenValidToken = "eyJhbGciOiJIUzI1NiJ9." +
+                "eyJ1c2VySWQiOjF9.PdEMJWhmPP4redDYU1ovusV_" +
+                "5el6JSQW5D2CGiWqUOE";
 
         @Test
         @DisplayName("token을 리턴합니다.")

@@ -32,4 +32,4 @@ upbit:
  url: "https://api.upbit.com/v1/market/all"
 
 jwt:
- secret: "a1234b5678c9"
+ secret: "a1234b5678c9a1234b5678c9a1234b5678c9"
