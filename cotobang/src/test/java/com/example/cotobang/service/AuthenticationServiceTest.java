@@ -33,6 +33,12 @@ class AuthenticationServiceTest {
 
     SessionFixtureFactory sessionFixtureFactory;
 
+    private static final Long USER_ID = 1L;
+
+    private static final String VALID_TOKEN = "eyJhbGciOiJIUzI1NiJ9." +
+            "eyJ1c2VySWQiOjF9.PdEMJWhmPP4redDYU1ovusV_" +
+            "5el6JSQW5D2CGiWqUOE";
+
     @BeforeEach
     void setUp() {
         sessionFixtureFactory = new SessionFixtureFactory();
@@ -108,6 +114,23 @@ class AuthenticationServiceTest {
             void 로그인에_실패했다는_내용의_예외를_던집니다() {
                 assertThatThrownBy(() -> authenticationService.login(givenSessionRequestData))
                         .isInstanceOf(LoginFailException.class);
+            }
+        }
+    }
+
+    @Nested
+    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+    class parseToken_메소드는 {
+
+        @Nested
+        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+        class access_token이_주어진다면 {
+
+            @Test
+            void userId를_반환합니다() {
+                Long userId = authenticationService.paserToken(VALID_TOKEN);
+
+                assertThat(userId).isEqualTo(userId);
             }
         }
     }
