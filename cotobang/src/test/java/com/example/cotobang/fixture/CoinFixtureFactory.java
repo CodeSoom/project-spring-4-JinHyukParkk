@@ -1,6 +1,7 @@
 package com.example.cotobang.fixture;
 
 import com.example.cotobang.domain.Coin;
+import com.example.cotobang.domain.User;
 import com.example.cotobang.dto.CoinDto;
 
 public class CoinFixtureFactory {
@@ -11,6 +12,16 @@ public class CoinFixtureFactory {
                 .koreanName("비트코인")
                 .englishName("Bitcoin")
                 .description("블록체인 기술을 기반으로 만들어진 온라인 암호 화폐")
+                .build();
+    }
+
+    public Coin create_코인(User user) {
+        return Coin.builder()
+                .market("KRW-BTC")
+                .koreanName("비트코인")
+                .englishName("Bitcoin")
+                .description("블록체인 기술을 기반으로 만들어진 온라인 암호 화폐")
+                .user(user)
                 .build();
     }
 

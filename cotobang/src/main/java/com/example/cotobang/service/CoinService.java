@@ -1,8 +1,10 @@
 package com.example.cotobang.service;
 
 import com.example.cotobang.domain.Coin;
+import com.example.cotobang.domain.User;
 import com.example.cotobang.dto.CoinDto;
 import com.example.cotobang.errors.CoinNotFoundException;
+import com.example.cotobang.errors.InvalidAccessTokenException;
 import com.example.cotobang.respository.CoinRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,19 +38,22 @@ public class CoinService {
                 .orElseThrow(() -> new CoinNotFoundException(id));
     }
 
-    public Coin createCoin(CoinDto coinDto) {
+    public Coin createCoin(CoinDto coinDto, User user) {
         final Coin coin = Coin.builder()
                 .market(coinDto.getMarket())
                 .koreanName(coinDto.getKoreanName())
                 .englishName(coinDto.getEnglishName())
                 .description(coinDto.getDescription())
+                .user(user)
                 .build();
 
         return coinRepository.save(coin);
     }
 
-    public Coin updateCoin(Long targetId, CoinDto source) {
+    public Coin updateCoin(Long targetId, CoinDto source, User user) {
         Coin coin = getCoin(targetId);
+
+        // 유저 비교 구현
 
         coin.change(
                 source.getMarket(),
@@ -60,8 +65,10 @@ public class CoinService {
         return coin;
     }
 
-    public Coin deleteCoin(Long id) {
+    public Coin deleteCoin(Long id, User user) {
         Coin coin = getCoin(id);
+
+        // 유저 비교 구현
 
         coinRepository.delete(coin);
 

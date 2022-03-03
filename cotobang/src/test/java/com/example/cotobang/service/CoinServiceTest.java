@@ -95,20 +95,25 @@ class CoinServiceTest {
 
             Long givenId;
             CoinDto givenCoinDto;
+            User user;
 
             @BeforeEach
             void prepare() {
-                Coin coin = coinFactory.create_코인();
+                user = userFixtureFactory.create_사용자_Hyuk();
+                userRepository.save(user);
+
+                Coin coin = coinFactory.create_코인(user);
                 givenId = coinRepository.save(coin)
                         .getId();
 
                 givenCoinDto = coinFactory.create_코인_DTO();
+
             }
 
             @Test
             @DisplayName("주어진 id의 coin을 수정하고 리턴합니다.")
             void it_update_coin_return_coin() {
-                Coin coin = coinService.updateCoin(givenId, givenCoinDto);
+                Coin coin = coinService.updateCoin(givenId, givenCoinDto, user);
 
                 assertThat(coin.getKoreanName()).isEqualTo(givenCoinDto.getKoreanName());
             }
@@ -120,10 +125,14 @@ class CoinServiceTest {
 
             Long givenId;
             CoinDto givenCoinDto;
+            User user;
 
             @BeforeEach
             void prepare() {
-                Coin coin = coinFactory.create_코인();
+                user = userFixtureFactory.create_사용자_Hyuk();
+                userRepository.save(user);
+
+                Coin coin = coinFactory.create_코인(user);
                 givenId = coinRepository.save(coin).getId();
                 coinRepository.deleteById(givenId);
 
@@ -133,7 +142,7 @@ class CoinServiceTest {
             @Test
             @DisplayName("coin이 없다는 내용의 에외를 던집니다.")
             void it_update_coin_return_coin() {
-                assertThatThrownBy(() -> coinService.updateCoin(givenId, givenCoinDto))
+                assertThatThrownBy(() -> coinService.updateCoin(givenId, givenCoinDto, user))
                         .isInstanceOf(CoinNotFoundException.class);
             }
         }
@@ -148,17 +157,21 @@ class CoinServiceTest {
         class Context_with_id {
 
             Long givenId;
+            User user;
 
             @BeforeEach
             void prepare() {
-                Coin coin = coinFactory.create_코인();
+                user = userFixtureFactory.create_사용자_Hyuk();
+                userRepository.save(user);
+
+                Coin coin = coinFactory.create_코인(user);
                 givenId = coinRepository.save(coin).getId();
             }
 
             @Test
             @DisplayName("주어진 id의 coin을 삭제하고 리턴합니다.")
             void it_update_coin_return_coin() {
-                coinService.deleteCoin(givenId);
+                coinService.deleteCoin(givenId, user);
 
                 Coin foundCoin = coinRepository.findById(givenId).orElse(null);
                 assertThat(foundCoin).isNull();
@@ -170,10 +183,14 @@ class CoinServiceTest {
         class Context_with_invalid_id {
 
             Long givenId;
+            User user;
 
             @BeforeEach
             void prepare() {
-                Coin coin = coinFactory.create_코인();
+                user = userFixtureFactory.create_사용자_Hyuk();
+                userRepository.save(user);
+
+                Coin coin = coinFactory.create_코인(user);
                 givenId = coinRepository.save(coin).getId();
 
                 coinRepository.deleteById(givenId);
@@ -182,7 +199,7 @@ class CoinServiceTest {
             @Test
             @DisplayName("coin이 없다는 내용의 에외를 던집니다.")
             void it_update_coin_return_coin() {
-                assertThatThrownBy(() -> coinService.deleteCoin(givenId))
+                assertThatThrownBy(() -> coinService.deleteCoin(givenId, user))
                         .isInstanceOf(CoinNotFoundException.class);
             }
         }

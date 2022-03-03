@@ -1,8 +1,10 @@
 package com.example.cotobang.utils;
 
+import com.example.cotobang.errors.InvalidAccessTokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -24,10 +26,15 @@ public class JwtUtil {
     }
 
     public Claims decode(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (SignatureException e) {
+            throw new InvalidAccessTokenException(token);
+        }
+
     }
 }

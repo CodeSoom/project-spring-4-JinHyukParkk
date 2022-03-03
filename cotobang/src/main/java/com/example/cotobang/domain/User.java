@@ -48,6 +48,10 @@ public class User extends BaseEntity {
         return !deleted && password.equals(this.password);
     }
 
+    public boolean compare(User user) {
+        return id == user.getId();
+    }
+
     @Override
     public String toString() {
         return String.format("User{id=%s, email=%s, name=%s, password=%s}",

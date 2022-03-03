@@ -2,9 +2,12 @@ package com.example.cotobang.service;
 
 import com.example.cotobang.domain.User;
 import com.example.cotobang.dto.SessionRequestData;
+import com.example.cotobang.errors.InvalidAccessTokenException;
 import com.example.cotobang.errors.LoginFailException;
 import com.example.cotobang.respository.UserRepository;
 import com.example.cotobang.utils.JwtUtil;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,5 +37,14 @@ public class AuthenticationService {
         }
 
         return jwtUtil.encode(user.getId());
+    }
+
+    public Long paserToken(String accessToken) {
+        if (accessToken == null || accessToken.isBlank()) {
+            throw new InvalidAccessTokenException(accessToken);
+        }
+        Claims claims = jwtUtil.decode(accessToken);
+
+        return claims.get("userId", Long.class);
     }
 }
