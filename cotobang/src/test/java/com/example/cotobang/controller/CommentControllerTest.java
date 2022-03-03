@@ -73,7 +73,7 @@ class CommentControllerTest {
         commentFixtureFactory = new CommentFixtureFactory();
 
         coin = coinRepository.save(coinFixtureFactory.create_코인());
-        user = userRepository.save(userFixtureFactory.create_사용자());
+        user = userRepository.save(userFixtureFactory.create_사용자_Hyuk());
     }
 
     @Nested

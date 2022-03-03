@@ -3,7 +3,10 @@ package com.example.cotobang.controller;
 import com.example.cotobang.domain.Coin;
 import com.example.cotobang.dto.CoinDto;
 import com.example.cotobang.fixture.CoinFixtureFactory;
+import com.example.cotobang.fixture.UserFixtureFactory;
 import com.example.cotobang.respository.CoinRepository;
+import com.example.cotobang.respository.UserRepository;
+import com.example.cotobang.utils.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,13 +40,23 @@ class CoinControllerTest {
     CoinRepository coinRepository;
 
     @Autowired
+    UserRepository userRepository;
+
+    UserFixtureFactory userFixtureFactory;
+
+    @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    JwtUtil jwtUtil;
+
     CoinFixtureFactory coinFactory;
+
 
     @BeforeEach
     void setUp() {
         coinFactory = new CoinFixtureFactory();
+        userFixtureFactory = new UserFixtureFactory();
 
         Coin coin = coinFactory.create_코인();
         coinRepository.save(coin);
@@ -75,10 +88,14 @@ class CoinControllerTest {
         class Context_with_coin {
 
             CoinDto givenCoinDto;
+            String token;
 
             @BeforeEach
             void prepare() {
                 givenCoinDto = coinFactory.create_코인_DTO();
+
+                Long userId = userRepository.save(userFixtureFactory.create_사용자_Hyuk()).getId();
+                token = jwtUtil.encode(userId);
             }
 
             @Test
@@ -88,7 +105,8 @@ class CoinControllerTest {
                                 post("/coins")
                                         .accept(MediaType.APPLICATION_JSON)
                                         .contentType(MediaType.APPLICATION_JSON)
-                                        .content(coinDtoToContent(givenCoinDto)))
+                                        .content(coinDtoToContent(givenCoinDto))
+                                        .header("Authorization", "Bearer " + token))
                         .andExpect(status().isCreated())
                         .andExpect(jsonPath("$.koreanName").value(givenCoinDto.getKoreanName()))
                         .andDo(print());

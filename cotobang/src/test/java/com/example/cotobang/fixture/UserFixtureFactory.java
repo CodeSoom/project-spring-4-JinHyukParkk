@@ -6,7 +6,7 @@ import com.example.cotobang.dto.UserRegistrationDto;
 
 public class UserFixtureFactory {
 
-    public User create_사용자() {
+    public User create_사용자_Hyuk() {
         return User.builder()
                 .email("pjh08190819@user.com")
                 .name("hyuk")
