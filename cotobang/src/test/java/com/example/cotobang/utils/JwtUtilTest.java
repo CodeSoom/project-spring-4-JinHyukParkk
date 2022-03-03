@@ -1,5 +1,6 @@
 package com.example.cotobang.utils;
 
+import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -15,14 +16,14 @@ class JwtUtilTest {
     @Autowired
     private JwtUtil jwtUtil;
 
+    Long givenUserId = 1L;
+    String givenValidToken = "eyJhbGciOiJIUzI1NiJ9." +
+            "eyJ1c2VySWQiOjF9.PdEMJWhmPP4redDYU1ovusV_" +
+            "5el6JSQW5D2CGiWqUOE";
+
     @Nested
     @DisplayName("encode() 메소드는")
     class Describe_encode {
-
-        Long givenUserId = 1L;
-        String givenValidToken = "eyJhbGciOiJIUzI1NiJ9." +
-                "eyJ1c2VySWQiOjF9.PdEMJWhmPP4redDYU1ovusV_" +
-                "5el6JSQW5D2CGiWqUOE";
 
         @Test
         @DisplayName("token을 리턴합니다.")
@@ -30,6 +31,19 @@ class JwtUtilTest {
             String token = jwtUtil.encode(givenUserId);
 
             assertThat(token).isEqualTo(givenValidToken);
+        }
+    }
+
+    @Nested
+    @DisplayName("decode() 메소드는")
+    class Describe_decode {
+        
+        @Test
+        @DisplayName("userId 정보를 리턴합니다.")
+        void it_return_userId() {
+            Claims claims = jwtUtil.decode(givenValidToken);
+
+            assertThat(claims.get("userId")).isEqualTo(givenUserId);
         }
     }
 }

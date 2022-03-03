@@ -1,5 +1,6 @@
 package com.example.cotobang.utils;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,5 +21,9 @@ public class JwtUtil {
         return Jwts.builder()
                 .claim("userId", userId)
                 .signWith(key).compact();
+    }
+
+    public Claims decode(String token) {
+        return null;
     }
 }
