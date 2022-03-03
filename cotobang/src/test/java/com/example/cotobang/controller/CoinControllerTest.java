@@ -114,6 +114,35 @@ class CoinControllerTest {
         }
 
         @Nested
+        @DisplayName("coin과 유효하지 않는 token이 주어진다면")
+        class Context_with_coin_and_invalidToken {
+
+            CoinDto givenCoinDto;
+            String invalidToken;
+
+            @BeforeEach
+            void prepare() {
+                givenCoinDto = coinFactory.create_코인_DTO();
+                invalidToken = "eyJhbGciOiJIUzI1NiJ9." +
+                        "eyJ1c2VySWQiOjF9.PdEMJWhmPP4redDYU1ovusV_" +
+                        "5el6JSQW5D2CGiABCDE";
+            }
+
+            @Test
+            @DisplayName("401(Unauthorized)를 응답합니다.")
+            void it_response_401() throws Exception {
+                mockMvc.perform(
+                                post("/coins")
+                                        .accept(MediaType.APPLICATION_JSON)
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(coinDtoToContent(givenCoinDto))
+                                    .header("Authorization", "Bearer " + invalidToken))
+                        .andExpect(status().isUnauthorized())
+                        .andDo(print());
+            }
+        }
+
+        @Nested
         @DisplayName("빈값이 포함된 coin 주어진다면")
         class Context_with_blank_coin {
 

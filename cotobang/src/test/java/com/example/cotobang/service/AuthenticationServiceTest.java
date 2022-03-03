@@ -2,6 +2,7 @@ package com.example.cotobang.service;
 
 import com.example.cotobang.domain.User;
 import com.example.cotobang.dto.SessionRequestData;
+import com.example.cotobang.errors.InvalidAccessTokenException;
 import com.example.cotobang.errors.LoginFailException;
 import com.example.cotobang.fixture.SessionFixtureFactory;
 import com.example.cotobang.respository.UserRepository;
@@ -38,6 +39,10 @@ class AuthenticationServiceTest {
     private static final String VALID_TOKEN = "eyJhbGciOiJIUzI1NiJ9." +
             "eyJ1c2VySWQiOjF9.PdEMJWhmPP4redDYU1ovusV_" +
             "5el6JSQW5D2CGiWqUOE";
+
+    private static final String INVALID_TOKEN = "eyJhbGciOiJIUzI1NiJ9." +
+            "eyJ1c2VySWQiOjF9.PdEMJWhmPP4redDYU1ovusV_" +
+            "5el6JSQW5D2CGiABCDE";
 
     @BeforeEach
     void setUp() {
@@ -131,6 +136,18 @@ class AuthenticationServiceTest {
                 Long userId = authenticationService.paserToken(VALID_TOKEN);
 
                 assertThat(userId).isEqualTo(userId);
+            }
+        }
+
+        @Nested
+        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+        class 유효하지_하지_않는_access_token이_주어진다면 {
+
+            @Test
+            void userId를_반환합니다() {
+                assertThatThrownBy(
+                        () -> authenticationService.paserToken(INVALID_TOKEN)
+                ).isInstanceOf(InvalidAccessTokenException.class);
             }
         }
     }

@@ -1,10 +1,13 @@
 package com.example.cotobang.service;
 
 import com.example.cotobang.domain.Coin;
+import com.example.cotobang.domain.User;
 import com.example.cotobang.dto.CoinDto;
 import com.example.cotobang.errors.CoinNotFoundException;
 import com.example.cotobang.fixture.CoinFixtureFactory;
+import com.example.cotobang.fixture.UserFixtureFactory;
 import com.example.cotobang.respository.CoinRepository;
+import com.example.cotobang.respository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -25,11 +28,17 @@ class CoinServiceTest {
     @Autowired
     CoinRepository coinRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
     CoinFixtureFactory coinFactory;
+
+    UserFixtureFactory userFixtureFactory;
 
     @BeforeEach
     void setUp() {
         coinFactory = new CoinFixtureFactory();
+        userFixtureFactory = new UserFixtureFactory();
 
         Coin coin = coinFactory.create_코인();
         coinRepository.save(coin);
@@ -57,16 +66,19 @@ class CoinServiceTest {
         class Context_with_coin {
 
             CoinDto givenCoinDto;
+            User user;
 
             @BeforeEach
             void prepare() {
                 givenCoinDto = coinFactory.create_코인_DTO();
+                user = userFixtureFactory.create_사용자_Hyuk();
+                userRepository.save(user);
             }
 
             @Test
             @DisplayName("coin을 생성하고 리턴합니다")
             void it_created_coin_return_coin() {
-                Coin coin = coinService.createCoin(givenCoinDto);
+                Coin coin = coinService.createCoin(givenCoinDto, user);
 
                 assertThat(coin.getKoreanName()).isEqualTo(givenCoinDto.getKoreanName());
             }

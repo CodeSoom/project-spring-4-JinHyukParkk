@@ -1,5 +1,6 @@
 package com.example.cotobang.utils;
 
+import com.example.cotobang.errors.InvalidAccessTokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.SignatureException;
 import org.junit.jupiter.api.DisplayName;
@@ -61,10 +62,10 @@ class JwtUtilTest {
         class Context_with_invalid_token {
 
             @Test
-            @DisplayName("SignatureException 던집니다.")
-            void it_return_signatureException() {
+            @DisplayName("InvalidAccessTokenException 던집니다.")
+            void it_return_InvalidAccessTokenException() {
                 assertThatThrownBy(() -> jwtUtil.decode(INVALID_TOKEN))
-                        .isInstanceOf(SignatureException.class);
+                        .isInstanceOf(InvalidAccessTokenException.class);
             }
         }
     }
