@@ -1,13 +1,12 @@
 package com.example.cotobang.utils;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.security.SignatureException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.security.SignatureException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -25,7 +24,7 @@ class JwtUtilTest {
             "5el6JSQW5D2CGiWqUOE";
     private static final String INVALID_TOKEN = "eyJhbGciOiJIUzI1NiJ9." +
             "eyJ1c2VySWQiOjF9.PdEMJWhmPP4redDYU1ovusV_" +
-            "5el6JSQW5D2CGiWqUOE123asd";
+            "5el6JSQW5D2CGiABCDE";
 
     @Nested
     @DisplayName("encode() 메소드는")
@@ -53,7 +52,7 @@ class JwtUtilTest {
             void it_return_userId() {
                 Claims claims = jwtUtil.decode(VALID_TOKEN);
 
-                assertThat(claims.get("userId")).isEqualTo(USER_ID);
+                assertThat(claims.get("userId", Long.class)).isEqualTo(USER_ID);
             }
         }
 
