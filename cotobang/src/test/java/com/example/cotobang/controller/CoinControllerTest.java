@@ -53,6 +53,7 @@ class CoinControllerTest {
 
     CoinFixtureFactory coinFactory;
 
+    User user;
 
     @BeforeEach
     void setUp() {
@@ -61,6 +62,8 @@ class CoinControllerTest {
 
         Coin coin = coinFactory.create_코인();
         coinRepository.save(coin);
+
+        user = userRepository.save(userFixtureFactory.create_사용자_Hyuk());
     }
 
     @Nested
@@ -148,9 +151,12 @@ class CoinControllerTest {
         class Context_with_blank_coin {
 
             CoinDto givenBlankCoinDto;
+            String token;
 
             @BeforeEach
             void prepare() {
+                token = jwtUtil.encode(user.getId());
+
                 givenBlankCoinDto = coinFactory.create_빈값_영어이름을_갖는_코인_DTO();
             }
 
@@ -161,7 +167,8 @@ class CoinControllerTest {
                                 post("/coins")
                                         .accept(MediaType.APPLICATION_JSON)
                                         .contentType(MediaType.APPLICATION_JSON)
-                                        .content(coinDtoToContent(givenBlankCoinDto)))
+                                        .content(coinDtoToContent(givenBlankCoinDto))
+                                        .header("Authorization", "Bearer " + token))
                         .andExpect(status().isBadRequest())
                         .andDo(print());
             }
@@ -217,8 +224,6 @@ class CoinControllerTest {
 
             @BeforeEach
             void prepare() {
-                User user = userRepository.save(userFixtureFactory.create_사용자_Hyuk());
-
                 Coin coin = coinFactory.create_코인(user);
                 givenId = coinRepository.save(coin).getId();
 
