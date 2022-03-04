@@ -235,9 +235,7 @@ class CoinControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(coinDtoToContent(coinDto))
                                 .header("Authorization", "Bearer " + token))
-                        .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.id").value(givenId))
-                        .andExpect(jsonPath("$.koreanName").value(coinDto.getKoreanName()))
+                        .andExpect(status().isUnauthorized())
                         .andDo(print());
             }
         }
@@ -248,14 +246,19 @@ class CoinControllerTest {
 
             Long givenId;
             CoinDto givenCoinDto;
+            String token;
 
             @BeforeEach
             void prepare() {
-                Coin coin = coinFactory.create_코인();
+                User user = userRepository.save(userFixtureFactory.create_사용자_Hyuk());
+
+                Coin coin = coinFactory.create_코인(user);
                 givenId = coinRepository.save(coin).getId();
                 coinRepository.deleteById(givenId);
 
                 givenCoinDto = coinFactory.create_코인_DTO();
+
+                token = jwtUtil.encode(user.getId());
             }
 
             @Test
@@ -263,7 +266,8 @@ class CoinControllerTest {
             void it_response_404() throws Exception {
                 mockMvc.perform(put("/coins/" + givenId)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(coinDtoToContent(givenCoinDto)))
+                                .content(coinDtoToContent(givenCoinDto))
+                                .header("Authorization", "Bearer " + token))
                         .andExpect(status().isNotFound())
                         .andDo(print());
             }
@@ -286,7 +290,7 @@ class CoinControllerTest {
             void prepare() {
                 User user = userRepository.save(userFixtureFactory.create_사용자_Hyuk());
 
-                Coin coin = coinFactory.create_코인(user);
+                coin = coinFactory.create_코인(user);
                 givenId = coinRepository.save(coin).getId();
 
                 Long userId = user.getId();
@@ -312,19 +316,26 @@ class CoinControllerTest {
 
             Long givenId;
             Coin coin;
+            String token;
 
             @BeforeEach
             void prepare() {
-                coin = coinFactory.create_코인();
+                User user = userRepository.save(userFixtureFactory.create_사용자_Hyuk());
+
+                coin = coinFactory.create_코인(user);
                 givenId = coinRepository.save(coin).getId();
                 coinRepository.deleteById(givenId);
+
+                Long userId = user.getId();
+                token = jwtUtil.encode(userId);
             }
 
             @Test
             @DisplayName("404(Not Found)를 응답합니다.")
             void it_response_404() throws Exception {
                 mockMvc.perform(delete("/coins/" + givenId)
-                                .contentType(MediaType.APPLICATION_JSON))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("Authorization", "Bearer " + token))
                         .andExpect(status().isNotFound())
                         .andDo(print());
             }
