@@ -1,6 +1,7 @@
 package com.example.cotobang.controller;
 
 import com.example.cotobang.domain.Coin;
+import com.example.cotobang.domain.User;
 import com.example.cotobang.dto.CoinDto;
 import com.example.cotobang.fixture.CoinFixtureFactory;
 import com.example.cotobang.fixture.UserFixtureFactory;
@@ -136,7 +137,7 @@ class CoinControllerTest {
                                         .accept(MediaType.APPLICATION_JSON)
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(coinDtoToContent(givenCoinDto))
-                                    .header("Authorization", "Bearer " + invalidToken))
+                                        .header("Authorization", "Bearer " + invalidToken))
                         .andExpect(status().isUnauthorized())
                         .andDo(print());
             }
@@ -177,13 +178,19 @@ class CoinControllerTest {
 
             Long givenId;
             CoinDto coinDto;
+            String token;
 
             @BeforeEach
             void prepare() {
-                Coin coin = coinFactory.create_코인();
+                User user = userRepository.save(userFixtureFactory.create_사용자_Hyuk());
+
+                Coin coin = coinFactory.create_코인(user);
                 givenId = coinRepository.save(coin).getId();
 
                 coinDto = coinFactory.create_코인_DTO();
+
+                Long userId = user.getId();
+                token = jwtUtil.encode(userId);
             }
 
             @Test
@@ -191,7 +198,43 @@ class CoinControllerTest {
             void it_response_200_and_coin() throws Exception {
                 mockMvc.perform(put("/coins/" + givenId)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(coinDtoToContent(coinDto)))
+                                .content(coinDtoToContent(coinDto))
+                                .header("Authorization", "Bearer " + token))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.id").value(givenId))
+                        .andExpect(jsonPath("$.koreanName").value(coinDto.getKoreanName()))
+                        .andDo(print());
+            }
+        }
+
+        @Nested
+        @DisplayName("id와 coin과 유효하지 않는 token이 주어진다면")
+        class Context_with_id_and_coin_and_invalid_token {
+
+            Long givenId;
+            CoinDto coinDto;
+            String token;
+
+            @BeforeEach
+            void prepare() {
+                User user = userRepository.save(userFixtureFactory.create_사용자_Hyuk());
+
+                Coin coin = coinFactory.create_코인(user);
+                givenId = coinRepository.save(coin).getId();
+
+                coinDto = coinFactory.create_코인_DTO();
+
+                Long userId = userRepository.save(userFixtureFactory.create_사용자_Min()).getId();
+                token = jwtUtil.encode(userId);
+            }
+
+            @Test
+            @DisplayName("401(Unauthorized)를 응답합니다.")
+            void it_response_401() throws Exception {
+                mockMvc.perform(put("/coins/" + givenId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(coinDtoToContent(coinDto))
+                                .header("Authorization", "Bearer " + token))
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$.id").value(givenId))
                         .andExpect(jsonPath("$.koreanName").value(coinDto.getKoreanName()))
@@ -237,18 +280,25 @@ class CoinControllerTest {
 
             Long givenId;
             Coin coin;
+            String token;
 
             @BeforeEach
             void prepare() {
-                coin = coinFactory.create_코인();
+                User user = userRepository.save(userFixtureFactory.create_사용자_Hyuk());
+
+                Coin coin = coinFactory.create_코인(user);
                 givenId = coinRepository.save(coin).getId();
+
+                Long userId = user.getId();
+                token = jwtUtil.encode(userId);
             }
 
             @Test
             @DisplayName("201(No Content)와 삭제된 coin을 응답합니다.")
             void it_response_201_and_coin() throws Exception {
                 mockMvc.perform(delete("/coins/" + givenId)
-                                .contentType(MediaType.APPLICATION_JSON))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("Authorization", "Bearer " + token))
                         .andExpect(status().isNoContent())
                         .andExpect(jsonPath("$.id").value(givenId))
                         .andExpect(jsonPath("$.koreanName").value(coin.getKoreanName()))
