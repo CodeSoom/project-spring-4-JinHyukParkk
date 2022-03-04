@@ -4,7 +4,6 @@ import com.example.cotobang.domain.Coin;
 import com.example.cotobang.domain.User;
 import com.example.cotobang.dto.CoinDto;
 import com.example.cotobang.errors.CoinNotFoundException;
-import com.example.cotobang.errors.InvalidAccessTokenException;
 import com.example.cotobang.respository.CoinRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

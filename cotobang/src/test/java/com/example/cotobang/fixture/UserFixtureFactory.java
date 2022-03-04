@@ -14,6 +14,14 @@ public class UserFixtureFactory {
                 .build();
     }
 
+    public User create_사용자_Min() {
+        return User.builder()
+                .email("min2931@user.com")
+                .name("Min")
+                .password("1234")
+                .build();
+    }
+
     public User create_중복테스트용_사용자() {
         return User.builder()
                 .email("duplication@user.com")
