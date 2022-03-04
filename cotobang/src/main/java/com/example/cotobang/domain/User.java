@@ -43,6 +43,14 @@ public class User extends BaseEntity {
     public void destory() {
         this.deleted = true;
     }
+    
+    public boolean authenticate(String password) {
+        return !deleted && password.equals(this.password);
+    }
+
+    public boolean compare(User user) {
+        return id == user.getId();
+    }
 
     @Override
     public String toString() {

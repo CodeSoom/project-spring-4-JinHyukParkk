@@ -94,7 +94,7 @@ class UserServiceTest {
 
             @BeforeEach
             void prepare() {
-                User user = userFixtureFactory.create_사용자();
+                User user = userFixtureFactory.create_사용자_Hyuk();
                 givenId = userRepository.save(user)
                         .getId();
 
@@ -121,7 +121,7 @@ class UserServiceTest {
             @BeforeEach
             void prepare() {
                 User user = userRepository.save(
-                        userFixtureFactory.create_사용자()
+                        userFixtureFactory.create_사용자_Hyuk()
                 );
                 userRepository.delete(user);
 
@@ -151,7 +151,7 @@ class UserServiceTest {
 
             @BeforeEach
             void prepare() {
-                User user = userFixtureFactory.create_사용자();
+                User user = userFixtureFactory.create_사용자_Hyuk();
                 givenId = userRepository.save(user)
                         .getId();
             }
@@ -174,7 +174,7 @@ class UserServiceTest {
             @BeforeEach
             void prepare() {
                 User user = userRepository.save(
-                        userFixtureFactory.create_사용자()
+                        userFixtureFactory.create_사용자_Hyuk()
                 );
                 userRepository.delete(user);
 

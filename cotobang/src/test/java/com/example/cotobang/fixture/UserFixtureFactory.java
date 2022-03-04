@@ -6,10 +6,18 @@ import com.example.cotobang.dto.UserRegistrationDto;
 
 public class UserFixtureFactory {
 
-    public User create_사용자() {
+    public User create_사용자_Hyuk() {
         return User.builder()
                 .email("pjh08190819@user.com")
                 .name("hyuk")
+                .password("1234")
+                .build();
+    }
+
+    public User create_사용자_Min() {
+        return User.builder()
+                .email("min2931@user.com")
+                .name("Min")
                 .password("1234")
                 .build();
     }

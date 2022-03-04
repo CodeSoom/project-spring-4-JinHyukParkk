@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 @Entity
 @Getter
@@ -27,15 +29,21 @@ public class Coin extends BaseEntity {
 
     private String description;
 
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Builder
     public Coin(String market,
                 String koreanName,
                 String englishName,
-                String description) {
+                String description,
+                User user) {
         this.market = market;
         this.koreanName = koreanName;
         this.englishName = englishName;
         this.description = description;
+        this.user = user;
     }
 
     public void change(String market,
