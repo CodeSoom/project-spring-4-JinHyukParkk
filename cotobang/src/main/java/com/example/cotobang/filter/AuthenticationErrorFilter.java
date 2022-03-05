@@ -22,6 +22,5 @@ public class AuthenticationErrorFilter extends HttpFilter {
         } catch (InvalidAccessTokenException exception) {
             response.sendError(HttpStatus.UNAUTHORIZED.value());
         }
-
     }
 }
