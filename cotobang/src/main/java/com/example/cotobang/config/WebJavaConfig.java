@@ -14,8 +14,13 @@ public class WebJavaConfig implements WebMvcConfigurer {
         this.authenticationInterceptor = authenticationInterceptor;
     }
 
+    /**
+     * 인증 체크를 위한 인터셉터 추가 (Spring Security로 리펙토링 후 사용하지 않음)
+     *
+     * @param registry
+     */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authenticationInterceptor);
+//        registry.addInterceptor(authenticationInterceptor);
     }
 }

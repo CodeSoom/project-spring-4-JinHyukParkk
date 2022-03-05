@@ -9,6 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Spring Security로 리펙토링 후 사용하지 않음
+ *
+ */
 @Component
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
