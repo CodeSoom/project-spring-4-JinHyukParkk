@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,17 +36,22 @@ public class User extends BaseEntity {
         this.password = password;
     }
 
-    public void change(String name, String password) {
+    public void change(String name) {
         this.name = name;
-        this.password = password;
+    }
+
+    public void changePassword(String password,
+                               PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(password);
     }
 
     public void destory() {
         this.deleted = true;
     }
     
-    public boolean authenticate(String password) {
-        return !deleted && password.equals(this.password);
+    public boolean authenticate(String password,
+                                PasswordEncoder passwordEncoder) {
+        return !deleted && passwordEncoder.matches(password, this.password);
     }
 
     public boolean compare(User user) {

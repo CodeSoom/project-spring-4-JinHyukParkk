@@ -7,7 +7,7 @@ import com.example.cotobang.errors.LoginFailException;
 import com.example.cotobang.respository.UserRepository;
 import com.example.cotobang.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.security.SignatureException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,13 +16,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthenticationService {
 
     private final UserRepository userRepository;
-
     private final JwtUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
 
     public AuthenticationService(UserRepository userRepository,
-                                 JwtUtil jwtUtil) {
+                                 JwtUtil jwtUtil,
+                                 PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.jwtUtil = jwtUtil;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public String login(SessionRequestData sessionRequestData) {
@@ -32,7 +34,7 @@ public class AuthenticationService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new LoginFailException(email));
 
-        if (!user.authenticate(password)) {
+        if (!user.authenticate(password, passwordEncoder)) {
             throw new LoginFailException(email);
         }
 

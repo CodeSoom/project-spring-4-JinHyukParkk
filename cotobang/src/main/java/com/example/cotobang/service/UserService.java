@@ -6,6 +6,7 @@ import com.example.cotobang.dto.UserRegistrationDto;
 import com.example.cotobang.errors.UserEmailDuplicationException;
 import com.example.cotobang.errors.UserNotFoundException;
 import com.example.cotobang.respository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,9 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User createUser(UserRegistrationDto userRegistrationDto) {
@@ -29,8 +33,12 @@ public class UserService {
         User user = User.builder()
                 .email(userRegistrationDto.getEmail())
                 .name(userRegistrationDto.getName())
-                .password(userRegistrationDto.getPassword())
                 .build();
+
+        user.changePassword(
+                userRegistrationDto.getPassword(),
+                passwordEncoder
+        );
 
         return userRepository.save(user);
     }
@@ -38,9 +46,10 @@ public class UserService {
     public User updateUser(Long id, UserModificationDto userModificationDto) {
         User user = getUser(id);
 
-        user.change(
-                userModificationDto.getName(),
-                userModificationDto.getPassword());
+        user.change(userModificationDto.getName());
+        user.changePassword(
+                userModificationDto.getPassword(),
+                passwordEncoder);
 
         return user;
     }
