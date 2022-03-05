@@ -246,6 +246,32 @@ class CoinControllerTest {
         }
 
         @Nested
+        @DisplayName("id와 coin이 주어지고,token이 주어지지 않는다면")
+        class Context_with_id_and_coin_without_token {
+
+            Long givenId;
+            CoinDto coinDto;
+
+            @BeforeEach
+            void prepare() {
+                Coin coin = coinFactory.create_코인(user);
+                givenId = coinRepository.save(coin).getId();
+
+                coinDto = coinFactory.create_코인_DTO();
+            }
+
+            @Test
+            @DisplayName("401(Unauthorized)를 응답합니다.")
+            void it_response_401() throws Exception {
+                mockMvc.perform(put("/coins/" + givenId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(coinDtoToContent(coinDto)))
+                        .andExpect(status().isUnauthorized())
+                        .andDo(print());
+            }
+        }
+
+        @Nested
         @DisplayName("유효하지 않은 id와 coin이 주어진다면")
         class Context_with_invalid_id_and_coin {
 
