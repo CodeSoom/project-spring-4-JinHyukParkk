@@ -1,10 +1,12 @@
 package com.example.cotobang.service;
 
+import com.example.cotobang.domain.Role;
 import com.example.cotobang.domain.User;
 import com.example.cotobang.dto.UserModificationDto;
 import com.example.cotobang.dto.UserRegistrationDto;
 import com.example.cotobang.errors.UserEmailDuplicationException;
 import com.example.cotobang.errors.UserNotFoundException;
+import com.example.cotobang.respository.RoleRepository;
 import com.example.cotobang.respository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,11 +17,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository,
+                       RoleRepository roleRepository,
                        PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -40,7 +45,14 @@ public class UserService {
                 passwordEncoder
         );
 
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        Role role = Role.builder()
+                .userId(user.getId())
+                .name("USER")
+                .build();
+        roleRepository.save(role);
+
+        return savedUser;
     }
 
     public User updateUser(Long id, UserModificationDto userModificationDto) {
