@@ -371,6 +371,33 @@ class CoinControllerTest {
                         .andDo(print());
             }
         }
+
+        @Nested
+        @DisplayName("id와 유효하지 않은 Token이 주어진다면")
+        class Context_with_id_and_invalid_token {
+
+            Long givenId;
+            String invalidToken;
+
+            @BeforeEach
+            void prepare() {
+                Coin coin = coinFactory.create_코인(user);
+                givenId = coinRepository.save(coin).getId();
+
+                Long userId = userRepository.save(userFixtureFactory.create_사용자_Min()).getId();
+                invalidToken = jwtUtil.encode(userId);
+            }
+
+            @Test
+            @DisplayName("403(Forbidden)를 응답합니다.")
+            void it_response_403() throws Exception {
+                mockMvc.perform(delete("/coins/" + givenId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("Authorization", "Bearer " + invalidToken))
+                        .andExpect(status().isForbidden())
+                        .andDo(print());
+            }
+        }
     }
 
     private String coinDtoToContent(CoinDto coinDto) throws JsonProcessingException {
