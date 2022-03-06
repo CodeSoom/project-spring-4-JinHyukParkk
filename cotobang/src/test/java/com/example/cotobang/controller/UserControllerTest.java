@@ -5,6 +5,7 @@ import com.example.cotobang.dto.UserModificationDto;
 import com.example.cotobang.dto.UserRegistrationDto;
 import com.example.cotobang.fixture.UserFixtureFactory;
 import com.example.cotobang.respository.UserRepository;
+import com.example.cotobang.utils.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,11 +39,19 @@ class UserControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    JwtUtil jwtUtil;
+
     UserFixtureFactory userFixtureFactory;
+
+    String token;
 
     @BeforeEach
     void setUp() {
         userFixtureFactory = new UserFixtureFactory();
+
+        User user = userRepository.save(userFixtureFactory.create_사용자_Hyuk());
+        token = jwtUtil.encode(user.getId());
     }
 
     @Nested
@@ -67,7 +76,8 @@ class UserControllerTest {
                                 post("/users")
                                         .accept(MediaType.APPLICATION_JSON)
                                         .contentType(MediaType.APPLICATION_JSON)
-                                        .content(userRegistrationDtoToContent(givenUserRegistrationDto)))
+                                        .content(userRegistrationDtoToContent(givenUserRegistrationDto))
+                                        .header("Authorization", "Bearer " + token))
                         .andExpect(status().isCreated())
                         .andExpect(jsonPath("$.name").value(givenUserRegistrationDto.getName()))
                         .andDo(print());
@@ -92,7 +102,8 @@ class UserControllerTest {
                                 post("/users")
                                         .accept(MediaType.APPLICATION_JSON)
                                         .contentType(MediaType.APPLICATION_JSON)
-                                        .content(userRegistrationDtoToContent(givenInvalidUserRegistrationDto)))
+                                        .content(userRegistrationDtoToContent(givenInvalidUserRegistrationDto))
+                                        .header("Authorization", "Bearer " + token))
                         .andExpect(status().isBadRequest());
             }
         }
@@ -115,7 +126,8 @@ class UserControllerTest {
                                 post("/users")
                                         .accept(MediaType.APPLICATION_JSON)
                                         .contentType(MediaType.APPLICATION_JSON)
-                                        .content(userRegistrationDtoToContent(givenInvalidUserRegistrationDto)))
+                                        .content(userRegistrationDtoToContent(givenInvalidUserRegistrationDto))
+                                        .header("Authorization", "Bearer " + token))
                         .andExpect(status().isBadRequest());
             }
         }
@@ -140,8 +152,33 @@ class UserControllerTest {
                                 post("/users")
                                         .accept(MediaType.APPLICATION_JSON)
                                         .contentType(MediaType.APPLICATION_JSON)
-                                        .content(userRegistrationDtoToContent(givenUserRegistrationDto)))
+                                        .content(userRegistrationDtoToContent(givenUserRegistrationDto))
+                                        .header("Authorization", "Bearer " + token))
                         .andExpect(status().isNotFound());
+            }
+        }
+
+        @Nested
+        @DisplayName("인증 token이 주어지지 않는다면")
+        class Context_without_token {
+
+            UserRegistrationDto givenUserRegistrationDto;
+
+            @BeforeEach
+            void prepare() {
+                givenUserRegistrationDto = userFixtureFactory.create_사용자_등록_DTO();
+            }
+
+            @Test
+            @DisplayName("401(Unauthorized)를 응답합니다.")
+            void it_response_401() throws Exception {
+                mockMvc.perform(
+                                post("/users")
+                                        .accept(MediaType.APPLICATION_JSON)
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(userRegistrationDtoToContent(givenUserRegistrationDto)))
+                        .andExpect(status().isUnauthorized())
+                        .andDo(print());
             }
         }
     }
@@ -171,7 +208,8 @@ class UserControllerTest {
             void it_response_200_and_user() throws Exception {
                 mockMvc.perform(put("/users/" + givenId)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(userModificationDtoDtoToContent(givenUserModificationDto)))
+                                .content(userModificationDtoDtoToContent(givenUserModificationDto))
+                                .header("Authorization", "Bearer " + token))
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$.id").value(givenId))
                         .andExpect(jsonPath("$.name").value(givenUserModificationDto.getName()))
@@ -202,7 +240,8 @@ class UserControllerTest {
             void it_response_404() throws Exception {
                 mockMvc.perform(put("/users/" + givenInvalidId)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(userModificationDtoDtoToContent(givenUserModificationDto)))
+                                .content(userModificationDtoDtoToContent(givenUserModificationDto))
+                                .header("Authorization", "Bearer " + token))
                         .andExpect(status().isNotFound())
                         .andDo(print());
             }
@@ -230,7 +269,8 @@ class UserControllerTest {
             @DisplayName("204(No content)와 삭제된 user를 응답합니다.")
             void it_response_204_and_user() throws Exception {
                 mockMvc.perform(delete("/users/" + givenId)
-                                .contentType(MediaType.APPLICATION_JSON))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("Authorization", "Bearer " + token))
                         .andExpect(status().isNoContent())
                         .andExpect(jsonPath("$.id").value(givenId))
                         .andDo(print());
@@ -257,7 +297,8 @@ class UserControllerTest {
             @DisplayName("404(Not Found)를 응답합니다.")
             void it_throw_UserNotFoundException() throws Exception {
                 mockMvc.perform(delete("/users/" + givenInvalidId)
-                                .contentType(MediaType.APPLICATION_JSON))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("Authorization", "Bearer " + token))
                         .andExpect(status().isNotFound())
                         .andDo(print());
             }
