@@ -220,7 +220,7 @@ class CoinControllerTest {
 
             Long givenId;
             CoinDto coinDto;
-            String token;
+            String invalidToken;
 
             @BeforeEach
             void prepare() {
@@ -230,23 +230,23 @@ class CoinControllerTest {
                 coinDto = coinFactory.create_코인_DTO();
 
                 Long userId = userRepository.save(userFixtureFactory.create_사용자_Min()).getId();
-                token = jwtUtil.encode(userId);
+                invalidToken = jwtUtil.encode(userId);
             }
 
             @Test
-            @DisplayName("401(Unauthorized)를 응답합니다.")
+            @DisplayName("403(Forbidden)를 응답합니다.")
             void it_response_401() throws Exception {
                 mockMvc.perform(put("/coins/" + givenId)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(coinDtoToContent(coinDto))
-                                .header("Authorization", "Bearer " + token))
-                        .andExpect(status().isUnauthorized())
+                                .header("Authorization", "Bearer " + invalidToken))
+                        .andExpect(status().isForbidden())
                         .andDo(print());
             }
         }
 
         @Nested
-        @DisplayName("id와 coin이 주어지고,token이 주어지지 않는다면")
+        @DisplayName("id와 coin이 주어지고, token이 주어지지 않는다면")
         class Context_with_id_and_coin_without_token {
 
             Long givenId;
