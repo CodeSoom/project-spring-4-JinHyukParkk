@@ -10,7 +10,6 @@ import com.example.cotobang.fixture.UserFixtureFactory;
 import com.example.cotobang.respository.CoinRepository;
 import com.example.cotobang.respository.CommentRepository;
 import com.example.cotobang.respository.UserRepository;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -90,7 +89,7 @@ class CommentServiceTest {
 
         @Nested
         @DisplayName("Comment 정보가 주어진다면")
-        class Context_with_commentDto{
+        class Context_with_commentDto {
 
             CommentDto givenCommentDto;
 

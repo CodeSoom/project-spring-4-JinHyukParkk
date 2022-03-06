@@ -1,11 +1,13 @@
 package com.example.cotobang.controller;
 
 import com.example.cotobang.domain.Coin;
+import com.example.cotobang.domain.Role;
 import com.example.cotobang.domain.User;
 import com.example.cotobang.dto.CoinDto;
 import com.example.cotobang.fixture.CoinFixtureFactory;
 import com.example.cotobang.fixture.UserFixtureFactory;
 import com.example.cotobang.respository.CoinRepository;
+import com.example.cotobang.respository.RoleRepository;
 import com.example.cotobang.respository.UserRepository;
 import com.example.cotobang.utils.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -43,7 +45,8 @@ class CoinControllerTest {
     @Autowired
     UserRepository userRepository;
 
-    UserFixtureFactory userFixtureFactory;
+    @Autowired
+    RoleRepository roleRepository;
 
     @Autowired
     ObjectMapper objectMapper;
@@ -51,8 +54,11 @@ class CoinControllerTest {
     @Autowired
     JwtUtil jwtUtil;
 
+    UserFixtureFactory userFixtureFactory;
+
     CoinFixtureFactory coinFactory;
 
+    User user;
 
     @BeforeEach
     void setUp() {
@@ -61,6 +67,15 @@ class CoinControllerTest {
 
         Coin coin = coinFactory.create_코인();
         coinRepository.save(coin);
+
+        user = userRepository.save(userFixtureFactory.create_사용자_Hyuk());
+
+        Role role = Role.builder()
+                .userId(user.getId())
+                .name("ADMIN")
+                .build();
+
+        roleRepository.save(role);
     }
 
     @Nested
@@ -95,7 +110,7 @@ class CoinControllerTest {
             void prepare() {
                 givenCoinDto = coinFactory.create_코인_DTO();
 
-                Long userId = userRepository.save(userFixtureFactory.create_사용자_Hyuk()).getId();
+                Long userId = user.getId();
                 token = jwtUtil.encode(userId);
             }
 
@@ -148,9 +163,12 @@ class CoinControllerTest {
         class Context_with_blank_coin {
 
             CoinDto givenBlankCoinDto;
+            String token;
 
             @BeforeEach
             void prepare() {
+                token = jwtUtil.encode(user.getId());
+
                 givenBlankCoinDto = coinFactory.create_빈값_영어이름을_갖는_코인_DTO();
             }
 
@@ -161,7 +179,8 @@ class CoinControllerTest {
                                 post("/coins")
                                         .accept(MediaType.APPLICATION_JSON)
                                         .contentType(MediaType.APPLICATION_JSON)
-                                        .content(coinDtoToContent(givenBlankCoinDto)))
+                                        .content(coinDtoToContent(givenBlankCoinDto))
+                                        .header("Authorization", "Bearer " + token))
                         .andExpect(status().isBadRequest())
                         .andDo(print());
             }
@@ -182,8 +201,6 @@ class CoinControllerTest {
 
             @BeforeEach
             void prepare() {
-                User user = userRepository.save(userFixtureFactory.create_사용자_Hyuk());
-
                 Coin coin = coinFactory.create_코인(user);
                 givenId = coinRepository.save(coin).getId();
 
@@ -213,19 +230,44 @@ class CoinControllerTest {
 
             Long givenId;
             CoinDto coinDto;
-            String token;
+            String invalidToken;
 
             @BeforeEach
             void prepare() {
-                User user = userRepository.save(userFixtureFactory.create_사용자_Hyuk());
-
                 Coin coin = coinFactory.create_코인(user);
                 givenId = coinRepository.save(coin).getId();
 
                 coinDto = coinFactory.create_코인_DTO();
 
                 Long userId = userRepository.save(userFixtureFactory.create_사용자_Min()).getId();
-                token = jwtUtil.encode(userId);
+                invalidToken = jwtUtil.encode(userId);
+            }
+
+            @Test
+            @DisplayName("403(Forbidden)를 응답합니다.")
+            void it_response_401() throws Exception {
+                mockMvc.perform(put("/coins/" + givenId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(coinDtoToContent(coinDto))
+                                .header("Authorization", "Bearer " + invalidToken))
+                        .andExpect(status().isForbidden())
+                        .andDo(print());
+            }
+        }
+
+        @Nested
+        @DisplayName("id와 coin이 주어지고, token이 주어지지 않는다면")
+        class Context_with_id_and_coin_without_token {
+
+            Long givenId;
+            CoinDto coinDto;
+
+            @BeforeEach
+            void prepare() {
+                Coin coin = coinFactory.create_코인(user);
+                givenId = coinRepository.save(coin).getId();
+
+                coinDto = coinFactory.create_코인_DTO();
             }
 
             @Test
@@ -233,8 +275,7 @@ class CoinControllerTest {
             void it_response_401() throws Exception {
                 mockMvc.perform(put("/coins/" + givenId)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(coinDtoToContent(coinDto))
-                                .header("Authorization", "Bearer " + token))
+                                .content(coinDtoToContent(coinDto)))
                         .andExpect(status().isUnauthorized())
                         .andDo(print());
             }
@@ -250,8 +291,6 @@ class CoinControllerTest {
 
             @BeforeEach
             void prepare() {
-                User user = userRepository.save(userFixtureFactory.create_사용자_Hyuk());
-
                 Coin coin = coinFactory.create_코인(user);
                 givenId = coinRepository.save(coin).getId();
                 coinRepository.deleteById(givenId);
@@ -288,8 +327,6 @@ class CoinControllerTest {
 
             @BeforeEach
             void prepare() {
-                User user = userRepository.save(userFixtureFactory.create_사용자_Hyuk());
-
                 coin = coinFactory.create_코인(user);
                 givenId = coinRepository.save(coin).getId();
 
@@ -320,8 +357,6 @@ class CoinControllerTest {
 
             @BeforeEach
             void prepare() {
-                User user = userRepository.save(userFixtureFactory.create_사용자_Hyuk());
-
                 coin = coinFactory.create_코인(user);
                 givenId = coinRepository.save(coin).getId();
                 coinRepository.deleteById(givenId);
@@ -337,6 +372,33 @@ class CoinControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .header("Authorization", "Bearer " + token))
                         .andExpect(status().isNotFound())
+                        .andDo(print());
+            }
+        }
+
+        @Nested
+        @DisplayName("id와 유효하지 않은 Token이 주어진다면")
+        class Context_with_id_and_invalid_token {
+
+            Long givenId;
+            String invalidToken;
+
+            @BeforeEach
+            void prepare() {
+                Coin coin = coinFactory.create_코인(user);
+                givenId = coinRepository.save(coin).getId();
+
+                Long userId = userRepository.save(userFixtureFactory.create_사용자_Min()).getId();
+                invalidToken = jwtUtil.encode(userId);
+            }
+
+            @Test
+            @DisplayName("403(Forbidden)를 응답합니다.")
+            void it_response_403() throws Exception {
+                mockMvc.perform(delete("/coins/" + givenId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("Authorization", "Bearer " + invalidToken))
+                        .andExpect(status().isForbidden())
                         .andDo(print());
             }
         }

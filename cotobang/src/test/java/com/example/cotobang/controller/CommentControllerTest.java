@@ -3,7 +3,6 @@ package com.example.cotobang.controller;
 import com.example.cotobang.domain.Coin;
 import com.example.cotobang.domain.Comment;
 import com.example.cotobang.domain.User;
-import com.example.cotobang.dto.CoinDto;
 import com.example.cotobang.dto.CommentDto;
 import com.example.cotobang.fixture.CoinFixtureFactory;
 import com.example.cotobang.fixture.CommentFixtureFactory;
@@ -164,9 +163,9 @@ class CommentControllerTest {
             @DisplayName("200(Ok)와 수정된 comment을 응답합니다.")
             void it_response_200_and_comment() throws Exception {
                 mockMvc.perform(put("/comments/" + givenCommentId)
-                                        .accept(MediaType.APPLICATION_JSON)
-                                        .contentType(MediaType.APPLICATION_JSON)
-                                        .content(commentDtoToContent(givenCommentDto)))
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(commentDtoToContent(givenCommentDto)))
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$.comment").value(givenCommentDto.getComment()))
                         .andExpect(jsonPath("$.user.id").value(givenCommentDto.getUserId()))

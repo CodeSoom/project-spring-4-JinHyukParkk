@@ -3,16 +3,16 @@ package com.example.cotobang.controller;
 import com.example.cotobang.domain.Coin;
 import com.example.cotobang.domain.User;
 import com.example.cotobang.dto.CoinDto;
-import com.example.cotobang.service.AuthenticationService;
 import com.example.cotobang.service.CoinService;
 import com.example.cotobang.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -30,14 +30,11 @@ public class CoinController {
 
     private final CoinService coinService;
     private final UserService userService;
-    private final AuthenticationService authenticationService;
 
     public CoinController(CoinService coinService,
-                          UserService userService,
-                          AuthenticationService authenticationService) {
+                          UserService userService) {
         this.coinService = coinService;
         this.userService = userService;
-        this.authenticationService = authenticationService;
     }
 
     /**
@@ -53,36 +50,41 @@ public class CoinController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Coin create(@RequestHeader("Authorization") String authorization,
-                       @RequestBody @Valid CoinDto coinDto) {
-        String accessToken = authorization.substring("Bearer ".length());
-        Long userId = authenticationService.paserToken(accessToken);
+    @PreAuthorize("isAuthenticated() and hasAuthority('ADMIN')")
+    public Coin create(@RequestBody @Valid CoinDto coinDto,
+                       Authentication authentication) {
 
-        User user = userService.getUser(userId);
+        User user = findUserByAuthentication(authentication);
 
         return coinService.createCoin(coinDto, user);
     }
 
     @RequestMapping(path = "/{id}", method = {RequestMethod.PUT, RequestMethod.PATCH})
-    public Coin update(@RequestHeader("Authorization") String authorization,
-                       @PathVariable Long id, @RequestBody CoinDto coinDto) {
-        String accessToken = authorization.substring("Bearer ".length());
-        Long userId = authenticationService.paserToken(accessToken);
+    @PreAuthorize("isAuthenticated() and hasAuthority('ADMIN')")
+    public Coin update(@PathVariable Long id, @RequestBody CoinDto coinDto,
+                       Authentication authentication) {
 
-        User user = userService.getUser(userId);
+        User user = findUserByAuthentication(authentication);
 
         return coinService.updateCoin(id, coinDto, user);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Coin delete(@RequestHeader("Authorization") String authorization,
-                       @PathVariable Long id) {
-        String accessToken = authorization.substring("Bearer ".length());
-        Long userId = authenticationService.paserToken(accessToken);
+    @PreAuthorize("isAuthenticated() and hasAuthority('ADMIN')")
+    public Coin delete(@PathVariable Long id,
+                       Authentication authentication) {
 
-        User user = userService.getUser(userId);
+        User user = findUserByAuthentication(authentication);
 
         return coinService.deleteCoin(id, user);
+    }
+
+    private User findUserByAuthentication(Authentication authentication) {
+        Long userId = Long.valueOf(
+                String.valueOf(
+                        authentication.getPrincipal()));
+
+        return userService.getUser(userId);
     }
 }

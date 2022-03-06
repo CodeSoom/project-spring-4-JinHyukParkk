@@ -5,6 +5,7 @@ import com.example.cotobang.dto.UserModificationDto;
 import com.example.cotobang.dto.UserRegistrationDto;
 import com.example.cotobang.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,12 +30,14 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("isAuthenticated() and hasAuthority('ADMIN')")
     public User create(@RequestBody @Valid UserRegistrationDto userRegistrationDto) {
         return userService.createUser(userRegistrationDto);
     }
 
     @RequestMapping(path = "{id}", method = {RequestMethod.PUT, RequestMethod.PATCH})
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isAuthenticated() and hasAuthority('ADMIN')")
     public User update(
             @PathVariable Long id,
             @RequestBody @Valid UserModificationDto modificationDto) {
@@ -43,6 +46,7 @@ public class UserController {
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("isAuthenticated() and hasAuthority('ADMIN')")
     public User delete(@PathVariable Long id) {
         return userService.delete(id);
     }
