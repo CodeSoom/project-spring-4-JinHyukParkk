@@ -3,7 +3,6 @@ package com.example.cotobang.controller;
 import com.example.cotobang.domain.Coin;
 import com.example.cotobang.domain.User;
 import com.example.cotobang.dto.CoinDto;
-import com.example.cotobang.service.AuthenticationService;
 import com.example.cotobang.service.CoinService;
 import com.example.cotobang.service.UserService;
 import org.springframework.http.HttpStatus;
