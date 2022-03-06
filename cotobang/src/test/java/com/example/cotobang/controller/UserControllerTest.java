@@ -246,6 +246,33 @@ class UserControllerTest {
                         .andDo(print());
             }
         }
+
+        @Nested
+        @DisplayName("id와 user 정보가 주어지고, 인증 token이 주어지지 않는다면")
+        class Context_with_id_and_user_without_token {
+
+            Long givenId;
+            UserModificationDto givenUserModificationDto;
+
+            @BeforeEach
+            void prepare() {
+                User user = userFixtureFactory.create_사용자_Hyuk();
+                givenId = userRepository.save(user)
+                        .getId();
+
+                givenUserModificationDto = userFixtureFactory.create_사용자_수정_DTO();
+            }
+
+            @Test
+            @DisplayName("401(Unauthorized)를 응답합니다.")
+            void it_response_401() throws Exception {
+                mockMvc.perform(put("/users/" + givenId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(userModificationDtoDtoToContent(givenUserModificationDto)))
+                        .andExpect(status().isUnauthorized())
+                        .andDo(print());
+            }
+        }
     }
 
     @Nested
@@ -300,6 +327,29 @@ class UserControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .header("Authorization", "Bearer " + token))
                         .andExpect(status().isNotFound())
+                        .andDo(print());
+            }
+        }
+
+        @Nested
+        @DisplayName("id가 주어지고, 인증 token이 주어지지 않는다면")
+        class Context_with_id_without_token {
+
+            Long givenId;
+
+            @BeforeEach
+            void prepare() {
+                User user = userFixtureFactory.create_사용자_Hyuk();
+                givenId = userRepository.save(user)
+                        .getId();
+            }
+
+            @Test
+            @DisplayName("401(Unauthorized)를 응답합니다.")
+            void it_response_401() throws Exception {
+                mockMvc.perform(delete("/users/" + givenId)
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isUnauthorized())
                         .andDo(print());
             }
         }
