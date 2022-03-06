@@ -1,9 +1,11 @@
 package com.example.cotobang.controller;
 
+import com.example.cotobang.domain.Role;
 import com.example.cotobang.domain.User;
 import com.example.cotobang.dto.UserModificationDto;
 import com.example.cotobang.dto.UserRegistrationDto;
 import com.example.cotobang.fixture.UserFixtureFactory;
+import com.example.cotobang.respository.RoleRepository;
 import com.example.cotobang.respository.UserRepository;
 import com.example.cotobang.utils.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -37,6 +39,9 @@ class UserControllerTest {
     UserRepository userRepository;
 
     @Autowired
+    RoleRepository roleRepository;
+
+    @Autowired
     ObjectMapper objectMapper;
 
     @Autowired
@@ -52,6 +57,13 @@ class UserControllerTest {
 
         User user = userRepository.save(userFixtureFactory.create_사용자_Hyuk());
         token = jwtUtil.encode(user.getId());
+
+        Role role = Role.builder()
+                .userId(user.getId())
+                .name("ADMIN")
+                .build();
+
+        roleRepository.save(role);
     }
 
     @Nested

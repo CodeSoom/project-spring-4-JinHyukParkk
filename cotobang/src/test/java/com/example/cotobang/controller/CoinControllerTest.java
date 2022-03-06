@@ -1,11 +1,13 @@
 package com.example.cotobang.controller;
 
 import com.example.cotobang.domain.Coin;
+import com.example.cotobang.domain.Role;
 import com.example.cotobang.domain.User;
 import com.example.cotobang.dto.CoinDto;
 import com.example.cotobang.fixture.CoinFixtureFactory;
 import com.example.cotobang.fixture.UserFixtureFactory;
 import com.example.cotobang.respository.CoinRepository;
+import com.example.cotobang.respository.RoleRepository;
 import com.example.cotobang.respository.UserRepository;
 import com.example.cotobang.utils.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -44,6 +46,9 @@ class CoinControllerTest {
     UserRepository userRepository;
 
     @Autowired
+    RoleRepository roleRepository;
+
+    @Autowired
     ObjectMapper objectMapper;
 
     @Autowired
@@ -64,6 +69,13 @@ class CoinControllerTest {
         coinRepository.save(coin);
 
         user = userRepository.save(userFixtureFactory.create_사용자_Hyuk());
+
+        Role role = Role.builder()
+                .userId(user.getId())
+                .name("ADMIN")
+                .build();
+
+        roleRepository.save(role);
     }
 
     @Nested
@@ -98,7 +110,7 @@ class CoinControllerTest {
             void prepare() {
                 givenCoinDto = coinFactory.create_코인_DTO();
 
-                Long userId = userRepository.save(userFixtureFactory.create_사용자_Hyuk()).getId();
+                Long userId = user.getId();
                 token = jwtUtil.encode(userId);
             }
 
@@ -189,8 +201,6 @@ class CoinControllerTest {
 
             @BeforeEach
             void prepare() {
-                User user = userRepository.save(userFixtureFactory.create_사용자_Hyuk());
-
                 Coin coin = coinFactory.create_코인(user);
                 givenId = coinRepository.save(coin).getId();
 
@@ -281,8 +291,6 @@ class CoinControllerTest {
 
             @BeforeEach
             void prepare() {
-                User user = userRepository.save(userFixtureFactory.create_사용자_Hyuk());
-
                 Coin coin = coinFactory.create_코인(user);
                 givenId = coinRepository.save(coin).getId();
                 coinRepository.deleteById(givenId);
@@ -319,8 +327,6 @@ class CoinControllerTest {
 
             @BeforeEach
             void prepare() {
-                User user = userRepository.save(userFixtureFactory.create_사용자_Hyuk());
-
                 coin = coinFactory.create_코인(user);
                 givenId = coinRepository.save(coin).getId();
 
@@ -351,8 +357,6 @@ class CoinControllerTest {
 
             @BeforeEach
             void prepare() {
-                User user = userRepository.save(userFixtureFactory.create_사용자_Hyuk());
-
                 coin = coinFactory.create_코인(user);
                 givenId = coinRepository.save(coin).getId();
                 coinRepository.deleteById(givenId);

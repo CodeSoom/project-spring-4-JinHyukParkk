@@ -1,5 +1,6 @@
 package com.example.cotobang.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,7 +23,9 @@ public class Role {
     @Getter
     private String name;
 
-    public Role(String name) {
+    @Builder
+    public Role(Long userId, String name) {
+        this.userId = userId;
         this.name = name;
     }
 }
