@@ -40,7 +40,7 @@ public class ControllerErrorAdvice {
         return new ErrorResponse("Invalid Access Token");
     }
 
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(NotAuthorityException.class)
     public ErrorResponse handleNotAuthorityException() {
         return new ErrorResponse("Not Authority");
