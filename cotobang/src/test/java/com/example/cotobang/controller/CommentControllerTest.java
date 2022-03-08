@@ -69,6 +69,8 @@ class CommentControllerTest {
 
     User user;
 
+    String token;
+
     final String invalidToken = "eyJhbGciOiJIUzI1NiJ9." +
             "eyJ1c2VySWQiOjF9.PdEMJWhmPP4redDYU1ovusV_" +
             "5el6JSQW5D2CGiABCDE";
@@ -81,6 +83,8 @@ class CommentControllerTest {
 
         coin = coinRepository.save(coinFixtureFactory.create_코인());
         user = userRepository.save(userFixtureFactory.create_사용자_Hyuk());
+
+        token = jwtUtil.encode(user.getId());
     }
 
     @Nested
@@ -118,22 +122,17 @@ class CommentControllerTest {
     class Describe_post_comments {
 
         @Nested
-        @DisplayName("CommentDto 와 Token이 주어진다면")
+        @DisplayName("CommentDto 과 Token이 주어진다면")
         class Context_with_commentDto_and_token {
 
             CommentDto givenCommentDto;
-            String token;
 
             @BeforeEach
             void prepare() {
-                Long userId = user.getId();
-
                 givenCommentDto = commentFixtureFactory.create_댓글_요청_DTO(
                         coin.getId(),
                         user.getId()
                 );
-
-                token = jwtUtil.encode(userId);
             }
 
             @Test
@@ -152,7 +151,7 @@ class CommentControllerTest {
         }
 
         @Nested
-        @DisplayName("CommentDto 와 유효하지 않는 Token이 주어진다면")
+        @DisplayName("CommentDto 과 유효하지 않는 Token이 주어진다면")
         class Context_with_commentDto_and_invalid_token {
 
             CommentDto givenCommentDto;
@@ -166,7 +165,7 @@ class CommentControllerTest {
             }
 
             @Test
-            @DisplayName("401(Unauthorized)를 응답합니다.")
+            @DisplayName("401(Unauthorization)을 응답합니다.")
             void it_response_401() throws Exception {
                 mockMvc.perform(
                                 post("/comments")
@@ -174,8 +173,7 @@ class CommentControllerTest {
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(commentDtoToContent(givenCommentDto))
                                         .header("Authorization", "Bearer " + invalidToken))
-                        .andExpect(status().isCreated())
-                        .andExpect(jsonPath("$.comment").value(givenCommentDto.getComment()))
+                        .andExpect(status().isUnauthorized())
                         .andDo(print());
             }
         }
@@ -186,8 +184,8 @@ class CommentControllerTest {
     class Describe_put_patch_comments {
 
         @Nested
-        @DisplayName("comment id와 CommentDto가 주어진다면")
-        class Context_with_comment_id_and_commentDto {
+        @DisplayName("comment id와 CommentDto 과 token이 주어진다면")
+        class Context_with_comment_id_and_commentDto_and_token {
 
             Long givenCommentId;
             CommentDto givenCommentDto;
@@ -208,11 +206,42 @@ class CommentControllerTest {
                 mockMvc.perform(put("/comments/" + givenCommentId)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(commentDtoToContent(givenCommentDto)))
+                                .content(commentDtoToContent(givenCommentDto))
+                                .header("Authorization", "Bearer " + token))
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$.comment").value(givenCommentDto.getComment()))
                         .andExpect(jsonPath("$.user.id").value(givenCommentDto.getUserId()))
                         .andExpect(jsonPath("$.coin.id").value(givenCommentDto.getCoinId()))
+                        .andDo(print());
+            }
+        }
+
+        @Nested
+        @DisplayName("comment id와 CommentDto 과 유효하지 않는 token이 주어진다면")
+        class Context_with_comment_id_and_commentDto_and_invalid_token {
+
+            Long givenCommentId;
+            CommentDto givenCommentDto;
+
+            @BeforeEach
+            void prepare() {
+                Comment comment = commentFixtureFactory.create_댓글(coin, user);
+                givenCommentId = commentRepository.save(comment).getId();
+                givenCommentDto = commentFixtureFactory.create_댓글_요청_DTO(
+                        coin.getId(),
+                        user.getId()
+                );
+            }
+
+            @Test
+            @DisplayName("401(Unauthorization)을 응답합니다.")
+            void it_response_200_and_comment() throws Exception {
+                mockMvc.perform(put("/comments/" + givenCommentId)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(commentDtoToContent(givenCommentDto))
+                                .header("Authorization", "Bearer " + invalidToken))
+                        .andExpect(status().isUnauthorized())
                         .andDo(print());
             }
         }
@@ -223,8 +252,8 @@ class CommentControllerTest {
     class Describe_delete_comments {
 
         @Nested
-        @DisplayName("comment id가 주어진다면")
-        class Context_with_comment_id {
+        @DisplayName("comment id 과 token이 주어진다면")
+        class Context_with_comment_id_and_token {
 
             Long givenCommentId;
 
@@ -243,6 +272,29 @@ class CommentControllerTest {
                         .andExpect(jsonPath("$.id").value(givenCommentId))
                         .andDo(print());
 
+            }
+        }
+
+        @Nested
+        @DisplayName("comment id 과 유효하지 않는 token 주어진다면")
+        class Context_with_comment_id_and_invalid_token {
+
+            Long givenCommentId;
+
+            @BeforeEach
+            void prepare() {
+                Comment comment = commentFixtureFactory.create_댓글(coin, user);
+                givenCommentId = commentRepository.save(comment).getId();
+            }
+
+            @Test
+            @DisplayName("401(Unauthorization)을 응답합니다.")
+            void it_response_401() throws Exception {
+                mockMvc.perform(delete("/comments/" + givenCommentId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("Authorization", "Bearer " + invalidToken))
+                        .andExpect(status().isUnauthorized())
+                        .andDo(print());
             }
         }
     }
