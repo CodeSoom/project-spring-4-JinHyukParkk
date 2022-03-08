@@ -10,6 +10,7 @@ import com.example.cotobang.fixture.UserFixtureFactory;
 import com.example.cotobang.respository.CoinRepository;
 import com.example.cotobang.respository.CommentRepository;
 import com.example.cotobang.respository.UserRepository;
+import com.example.cotobang.utils.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,6 +56,9 @@ class CommentControllerTest {
     @Autowired
     CommentRepository commentRepository;
 
+    @Autowired
+    JwtUtil jwtUtil;
+
     CoinFixtureFactory coinFixtureFactory;
 
     UserFixtureFactory userFixtureFactory;
@@ -64,6 +68,10 @@ class CommentControllerTest {
     Coin coin;
 
     User user;
+
+    final String invalidToken = "eyJhbGciOiJIUzI1NiJ9." +
+            "eyJ1c2VySWQiOjF9.PdEMJWhmPP4redDYU1ovusV_" +
+            "5el6JSQW5D2CGiABCDE";
 
     @BeforeEach
     void setUp() {
@@ -110,8 +118,42 @@ class CommentControllerTest {
     class Describe_post_comments {
 
         @Nested
-        @DisplayName("CommentDto가 주어진다면")
-        class Context_with_commentDto {
+        @DisplayName("CommentDto 와 Token이 주어진다면")
+        class Context_with_commentDto_and_token {
+
+            CommentDto givenCommentDto;
+            String token;
+
+            @BeforeEach
+            void prepare() {
+                Long userId = user.getId();
+
+                givenCommentDto = commentFixtureFactory.create_댓글_요청_DTO(
+                        coin.getId(),
+                        user.getId()
+                );
+
+                token = jwtUtil.encode(userId);
+            }
+
+            @Test
+            @DisplayName("201(Created)와 등록된 comment을 응답합니다.")
+            void it_response_201_and_comment() throws Exception {
+                mockMvc.perform(
+                                post("/comments")
+                                        .accept(MediaType.APPLICATION_JSON)
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(commentDtoToContent(givenCommentDto))
+                                        .header("Authorization", "Bearer " + token))
+                        .andExpect(status().isCreated())
+                        .andExpect(jsonPath("$.comment").value(givenCommentDto.getComment()))
+                        .andDo(print());
+            }
+        }
+
+        @Nested
+        @DisplayName("CommentDto 와 유효하지 않는 Token이 주어진다면")
+        class Context_with_commentDto_and_invalid_token {
 
             CommentDto givenCommentDto;
 
@@ -124,13 +166,14 @@ class CommentControllerTest {
             }
 
             @Test
-            @DisplayName("201(Created)와 등록된 comment을 응답합니다.")
-            void it_response_201_and_comment() throws Exception {
+            @DisplayName("401(Unauthorized)를 응답합니다.")
+            void it_response_401() throws Exception {
                 mockMvc.perform(
                                 post("/comments")
                                         .accept(MediaType.APPLICATION_JSON)
                                         .contentType(MediaType.APPLICATION_JSON)
-                                        .content(commentDtoToContent(givenCommentDto)))
+                                        .content(commentDtoToContent(givenCommentDto))
+                                        .header("Authorization", "Bearer " + invalidToken))
                         .andExpect(status().isCreated())
                         .andExpect(jsonPath("$.comment").value(givenCommentDto.getComment()))
                         .andDo(print());
