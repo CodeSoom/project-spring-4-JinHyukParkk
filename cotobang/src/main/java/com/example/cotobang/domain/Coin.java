@@ -56,6 +56,10 @@ public class Coin extends BaseEntity {
         this.description = description;
     }
 
+    public boolean compare(Coin coin) {
+        return id == coin.getId();
+    }
+
     @Override
     public String toString() {
         return "Coin{" +

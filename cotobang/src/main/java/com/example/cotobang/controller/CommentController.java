@@ -8,6 +8,8 @@ import com.example.cotobang.service.CoinService;
 import com.example.cotobang.service.CommentService;
 import com.example.cotobang.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,26 +49,42 @@ public class CommentController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Comment create(@RequestBody CommentDto commentDto) {
+    @PreAuthorize("isAuthenticated() and hasAuthority('USER')")
+    public Comment create(@RequestBody CommentDto commentDto,
+                          Authentication authentication) {
         Coin coin = coinService.getCoin(commentDto.getCoinId());
-        User user = userService.getUser(commentDto.getUserId());
+        User user = findUserByAuthentication(authentication);
 
         return commentService.createComment(commentDto, coin, user);
     }
 
     @RequestMapping(path = "{id}", method = {RequestMethod.PUT, RequestMethod.PATCH})
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isAuthenticated() and hasAuthority('USER')")
     public Comment update(@PathVariable Long id,
-                          @RequestBody CommentDto commentDto) {
+                          @RequestBody CommentDto commentDto,
+                          Authentication authentication) {
         Coin coin = coinService.getCoin(commentDto.getCoinId());
-        User user = userService.getUser(commentDto.getUserId());
+        User user = findUserByAuthentication(authentication);
 
         return commentService.updateComment(id, commentDto, coin, user);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Comment delete(@PathVariable Long id) {
-        return commentService.deleteComment(id);
+    public Comment delete(@PathVariable Long id,
+                          Authentication authentication) {
+
+        User user = findUserByAuthentication(authentication);
+
+        return commentService.deleteComment(id, user);
+    }
+
+    private User findUserByAuthentication(Authentication authentication) {
+        Long userId = Long.valueOf(
+                String.valueOf(
+                        authentication.getPrincipal()));
+
+        return userService.getUser(userId);
     }
 }
