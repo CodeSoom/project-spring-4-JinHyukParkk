@@ -2,6 +2,7 @@ package com.example.cotobang.controller;
 
 import com.example.cotobang.domain.Coin;
 import com.example.cotobang.domain.Comment;
+import com.example.cotobang.domain.Role;
 import com.example.cotobang.domain.User;
 import com.example.cotobang.dto.CommentDto;
 import com.example.cotobang.fixture.CoinFixtureFactory;
@@ -9,6 +10,7 @@ import com.example.cotobang.fixture.CommentFixtureFactory;
 import com.example.cotobang.fixture.UserFixtureFactory;
 import com.example.cotobang.respository.CoinRepository;
 import com.example.cotobang.respository.CommentRepository;
+import com.example.cotobang.respository.RoleRepository;
 import com.example.cotobang.respository.UserRepository;
 import com.example.cotobang.utils.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -57,6 +59,9 @@ class CommentControllerTest {
     CommentRepository commentRepository;
 
     @Autowired
+    RoleRepository roleRepository;
+
+    @Autowired
     JwtUtil jwtUtil;
 
     CoinFixtureFactory coinFixtureFactory;
@@ -85,6 +90,13 @@ class CommentControllerTest {
         user = userRepository.save(userFixtureFactory.create_사용자_Hyuk());
 
         token = jwtUtil.encode(user.getId());
+
+        Role role = Role.builder()
+                .userId(user.getId())
+                .name("USER")
+                .build();
+
+        roleRepository.save(role);
     }
 
     @Nested
@@ -267,7 +279,8 @@ class CommentControllerTest {
             @DisplayName("204(No Content)와 삭제된 Comment를 응답합니다.")
             void it_response_204_and_comment() throws Exception {
                 mockMvc.perform(delete("/comments/" + givenCommentId)
-                                .contentType(MediaType.APPLICATION_JSON))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("Authorization", "Bearer " + token))
                         .andExpect(status().isNoContent())
                         .andExpect(jsonPath("$.id").value(givenCommentId))
                         .andDo(print());
