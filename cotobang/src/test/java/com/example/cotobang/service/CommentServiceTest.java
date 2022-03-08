@@ -161,7 +161,7 @@ class CommentServiceTest {
         @Test
         @DisplayName("comment를 삭제하고 반환합니다.")
         void it_delete_comment_return_comment() {
-            Comment comment = commentService.deleteComment(givenCommentId);
+            Comment comment = commentService.deleteComment(givenCommentId, user);
 
             assertThat(comment).isNotNull();
             assertThat(comment.getId())

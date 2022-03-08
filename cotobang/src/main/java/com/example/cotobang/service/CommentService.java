@@ -48,7 +48,12 @@ public class CommentService {
     }
 
     public Comment deleteComment(Long id) {
+    public Comment deleteComment(Long id, User user) {
         Comment comment = getComment(id);
+
+        if (!user.compare(comment.getUser())) {
+            throw new NotAuthorityException(user.getName());
+        }
 
         commentRepository.delete(comment);
 
