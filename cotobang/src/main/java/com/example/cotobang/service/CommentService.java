@@ -4,6 +4,7 @@ import com.example.cotobang.domain.Coin;
 import com.example.cotobang.domain.Comment;
 import com.example.cotobang.domain.User;
 import com.example.cotobang.dto.CommentDto;
+import com.example.cotobang.errors.NotAuthorityException;
 import com.example.cotobang.respository.CommentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,13 +43,26 @@ public class CommentService {
                                  User user) {
         Comment comment = getComment(id);
 
-        comment.change(commentDto.getComment());
+        if (!coin.compare(comment.getCoin())) {
+            throw new NotAuthorityException(coin.getKoreanName());
+        }
+
+        if (!user.compare(comment.getUser())) {
+            throw new NotAuthorityException(user.getName());
+        }
+
+        comment.change(
+                commentDto.getComment());
 
         return comment;
     }
 
-    public Comment deleteComment(Long id) {
+    public Comment deleteComment(Long id, User user) {
         Comment comment = getComment(id);
+
+        if (!user.compare(comment.getUser())) {
+            throw new NotAuthorityException(user.getName());
+        }
 
         commentRepository.delete(comment);
 
